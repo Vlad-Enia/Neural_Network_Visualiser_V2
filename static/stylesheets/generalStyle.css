@@ -134,14 +134,14 @@ h2{
 .header{
     background-color: var(--background-color);
     padding-top: 35px;
-    padding-bottom: 35px;
+    padding-bottom: 30px;
 }
 
 .header > h2{
     text-align: center;
     background-color: var(--background-color);
     font-weight: lighter;
-    margin-bottom: 0;
+    margin-bottom: 10px;
 }
 
 .btn-primary{

@@ -11,7 +11,7 @@ def hello_world():  # put application's code here
 
 @app.route('/guide')
 def load_guide_page():
-    return flask.render_template('guide_0.html')
+    return flask.render_template('guide.html')
 
 
 @app.route('/guide/<int:step>')
