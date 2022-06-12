@@ -1,0 +1,176 @@
+:root{
+    --background-color: rgb(242,238,227);
+    --accent-color: rgb(80,101,168);
+    --darker-accent-color: rgb(46,60,106);
+}
+
+html{
+    background-color: whitesmoke;
+}
+
+body{
+    background-color: whitesmoke;
+}
+
+.centersContent{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.formDiv{
+    margin-top: 50px;
+    width: 440px;
+    padding: 40px 20px;
+    border: 2px solid lightgrey;
+    box-shadow: 0 0 10px #E0E0E0;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#content{
+    display: flex;
+    flex-direction: column;
+    padding: 20px 300px 100px;
+    width: 100%;
+}
+
+#columns-div{
+    display: flex;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    width: 100%;
+}
+
+#step-process, #predefined{
+    width:45%;
+    height: auto;
+    position: relative;
+    margin: 10px;
+    /*padding: 30px;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#or-div{
+    width: 10%;
+}
+
+#or-div > h4{
+    font-weight: lighter;
+    text-align: center;
+}
+
+#step-process > h4, #predefined > h4{
+    font-weight: normal;
+    text-align: center;
+}
+
+#step-process > h5, #predefined > h5{
+    font-weight: lighter;
+    text-align: center;
+}
+
+.introduction{
+    padding-top: 20px;
+}
+
+.introduction > h5{
+    font-weight: lighter;
+}
+
+
+
+.figure-img{
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+    display: block;
+}
+
+figcaption {
+    width: auto;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+form{
+    width: 100%;
+}
+
+
+
+h2{
+    text-align: center;
+    color: var(--darker-accent-color);
+}
+
+.navbar{
+    padding-bottom: 0;
+    padding-top: 0;
+    background-color: var(--accent-color);
+    color: var(--background-color);
+}
+
+#logo{
+    margin-right: 20px;
+}
+
+.nav-link{
+    color: var(--background-color);
+    size: 20px
+}
+
+.nav-link:hover{
+    color: white;
+}
+
+.header{
+    background-color: var(--background-color);
+    padding-top: 35px;
+    padding-bottom: 35px;
+}
+
+.header > h2{
+    text-align: center;
+    background-color: var(--background-color);
+    font-weight: lighter;
+    margin-bottom: 0;
+}
+
+.btn-primary{
+    margin-top: 20px;
+}
+
+.btn-primary, .btn-primary:visited {
+    background-color: var(--accent-color) !important;
+    outline: none !important;
+    box-shadow: none;
+    border: none;
+}
+
+.btn-primary:hover{
+    background-color: var(--darker-accent-color) !important;
+    outline: none !important;
+    box-shadow: none;
+    border: none;
+}
+
+.btn-primary:active{
+    background-color: darkgrey !important;
+    outline: none !important;
+    box-shadow: none;
+    border: none;
+}
+
+.btn-primary:focus{
+    outline: none !important;
+    box-shadow: none;
+    border: none;
+}

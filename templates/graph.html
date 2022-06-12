@@ -1,0 +1,93 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+        <style type="text/css">
+            #mynetwork {
+                width: 50%;
+                height: 400px;
+                background-color: #ffffff;
+                border: 1px solid lightgray;
+                position: relative;
+                float: left;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id = "mynetwork"></div>
+
+
+        <script type="text/javascript">
+
+            function sleep(ms){
+                return new Promise(resolve => setTimeout(resolve, ms))
+            }
+
+
+            var nodes = new vis.DataSet([{"color": "lightblue", "fixedsize": true, "id": "0_0", "label": "0_0", "level": 0, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_0", "label": "1_0", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_1", "label": "1_1", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_2", "label": "1_2", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_3", "label": "1_3", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_4", "label": "1_4", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightgreen", "fixedsize": true, "id": "1_5", "label": "1_5", "level": 1, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightblue", "fixedsize": true, "id": "0_1", "label": "0_1", "level": 0, "shape": "circle", "size": 10, "width": 0.6}, {"color": "lightblue", "fixedsize": true, "id": "2_0", "label": "2_0", "level": 2, "shape": "ellipse", "size": 10, "width": 1.5}]);
+            var edges = new vis.DataSet([{"id":1, "color": "black", "from": "0_0", "title": "cv", "to": "1_0", "weight": 1, "width": 5}, {"color": "red", "from": "0_0", "title": "cv", "to": "1_1", "weight": 1, "width": 5}, {"color": "red", "from": "0_0", "title": "cv", "to": "1_2", "weight": 1, "width": 5}, {"color": "red", "from": "0_0", "title": "cv", "to": "1_3", "weight": 1, "width": 5}, {"color": "red", "from": "0_0", "title": "cv", "to": "1_4", "weight": 1, "width": 5}, {"color": "red", "from": "0_0", "title": "cv", "to": "1_5", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_0", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_1", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_2", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_3", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_4", "weight": 1, "width": 5}, {"color": "red", "from": "0_1", "title": "cv", "to": "1_5", "weight": 1, "width": 5}, {"color": "red", "from": "1_0", "title": "cv", "to": "2_0", "weight": 1, "width": 5}, {"color": "red", "from": "1_1", "title": "cv", "to": "2_0", "weight": 1, "width": 5}, {"color": "red", "from": "1_2", "title": "cv", "to": "2_0", "weight": 1, "width": 5}, {"color": "red", "from": "1_3", "title": "cv", "to": "2_0", "weight": 1, "width": 5}, {"color": "red", "from": "1_4", "title": "cv", "to": "2_0", "weight": 1, "width": 5}, {"color": "red", "from": "1_5", "title": "cv", "to": "2_0", "weight": 1, "width": 5}]);
+            var data = {nodes: nodes, edges: edges};
+            let options = {
+                "configure": {
+                    "enabled": false
+                },
+                "edges": {
+                    "color": {
+                        "inherit": true
+                    },
+                    "smooth": {
+                        "enabled": false,
+                        "type": "continuous"
+                    }
+                },
+                "interaction": {
+                    "dragNodes": true,
+                    "hideEdgesOnDrag": false,
+                    "hideNodesOnDrag": false
+                },
+                "layout": {
+                    "hierarchical": {
+                        "blockShifting": true,
+                        "edgeMinimization": true,
+                        "enabled": true,
+                        "levelSeparation": 300,
+                        "parentCentralization": true,
+                        "sortMethod": "hubsize",
+                        "treeSpacing": 200,
+                        "direction": "LR"
+                    },
+                    "improvedLayout": true,
+                    "randomSeed": 0
+                },
+                "physics": {
+                    "enabled": true,
+                    "stabilization": {
+                        "enabled": true,
+                        "fit": true,
+                        "iterations": 1000,
+                        "onlyDynamicEdges": false,
+                        "updateInterval": 50
+                    }
+                }
+            }
+
+            var container = document.getElementById('mynetwork')
+            var network = new vis.Network(container, data, options)
+
+            var cv = 'cv'
+            async function animate(){
+                for (let i = 0; i < 500; i++){
+                    await sleep(1)
+                    var edge = edges.get(1)
+                    edge.width += 0.1
+                    edges.update(edge)
+                }
+            }
+
+            animate()
+
+
+        </script>
+    </body>
+</html>
