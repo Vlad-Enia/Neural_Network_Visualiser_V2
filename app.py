@@ -19,6 +19,9 @@ def load_guide_step(step):
     page_name = f'guide_{step}.html'
     return flask.render_template(page_name)
 
+@app.route('/graph')
+def load_graph():
+    return flask.render_template('graph.html')
 
 if __name__ == '__main__':
     app.run()

@@ -1,0 +1,8 @@
+#general-nn {
+    width: 100%;
+    height: 300px;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    position: relative;
+    float: left;
+}
