@@ -16,7 +16,10 @@ def load_guide_page():
 
 @app.route('/guide/<int:step>')
 def load_guide_step(step):
-    page_name = f'guide_{step}.html'
+    if step == 0:
+        page_name = 'guide.html'
+    else:
+        page_name = f'guide_{step}.html'
     return flask.render_template(page_name)
 
 @app.route('/graph')

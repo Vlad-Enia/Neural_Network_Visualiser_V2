@@ -5,10 +5,14 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/drawGraph.js"></script>
         <script src="../static/scripts/guideScript.js"></script>
+
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.js.css"/>
 
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
@@ -37,7 +41,7 @@
             <div id="why-div" class="introduction">
 
                 <br>
-                <h4>Machine Learning Concepts</h4>
+                <h4><b>Machine Learning</b> Concepts</h4>
                 <br>
                 <ul>
                     <li>
@@ -77,19 +81,52 @@
                     </li>
                     <li>
                         <h5>
-                            The most common type of neural networks is the <b>feed forward</b> architecture, also known as the <b>multi-layer perceptron</b> architecture.
-                            These networks are organized in <b>layers</b> of neurons. Each node from one layer is connected through an <b>weighted edge</b> to all the neurons on the next layer.
+                            The simplest kind of neural network is the <b>perceptron</b> network, which consists of a single layer containing only one neuron. The inputs are fed directly into this neuron
+                            via a series of weights. The sum of the products between each input and its respective weight is computed and if the value of the sum is above some threshold (usually <i>0</i>)
+                            the neuron fires and outputs the activated value (typically <i>1</i>). Otherwise, it outputs the deactivated value (typically <i>-1</i> or <i>0</i>). Combining more than one of
+                            the perceptron neuron results in a <b>single-layer perceptron</b> network.
+                        </h5>
+                        <br>
+                        <figure>
+                            <div id="perceptron-div" class="nn-graph-div"></div>
+                            <figcaption>
+                                The Perceptron Network.
+                            </figcaption>
+                        </figure>
+                        <br>
+                        <h5>
+                            You can see above that the perceptron applies a function <i>f</i> on the <i>z</i>, the sum of the products between each input and its weight. These functions used by neurons are called
+                            <b>activation functions</b>, and their outputs represent the output of the neuron. In the case of the perceptron, the activation function used is the <b>step function</b>.
+                        </h5>
+                    </li>
+                    <li>
+                        <h5>
+                            Because it is described by a linear equation, the perceptron is a <b>linear classifier</b>. Therefore, in a two-dimensional space, the perceptron is described by a line, while in space
+                            with 3 or more dimensions the perceptron is described by a hyperplane.
+                        </h5>
+                    </li>
+                    <li>
+                        <h5>
+                            The most common type of neural networks architectures is the <b>feed forward</b> (also known as the <b>multi-layer perceptron</b>).
+                            These networks are organized composed of at least 3 <b>layers</b> of neurons. Each node from one layer is connected through <b>weighted edges</b> to all the neurons on the next layer.
+                        </h5>
+                    </li>
+                    <li>
+                        <h5>
+                            A neural network with at least three layers (i.e. an input layer, an output layer and at least one hidden layer) is called a <b>deep neural network</b>. These types of
+                            networks are the heart of <b>Deep Learning</b>.
                         </h5>
                     </li>
                 </ul>
+                <br>
                 <figure>
-                    <div id="general-nn"></div>
+                    <div id="general-nn" class="nn-graph-div"></div>
                     <figcaption>
                         Google Trend showing more attention towards <b>deep learning</b> in the recent years, compared to other machine learning algorithms.<br>
                         Source: <a href="https://ieeexplore.ieee.org/document/8373692">Deep Learning for IoT Big Data and Streaming Analytics: A Survey</a>
                     </figcaption>
                 </figure>
-
+                <br>
 
                 <br>
                 <h4>What is <b>Deep Learning?</b></h4>

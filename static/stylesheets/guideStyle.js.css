@@ -1,8 +1,10 @@
-#general-nn {
+.nn-graph-div {
     width: 100%;
     height: 300px;
     background-color: whitesmoke;
     border: 1px solid lightgray;
+    border-radius: 5px;
+    box-shadow: #444444;
     position: relative;
     float: left;
 }
