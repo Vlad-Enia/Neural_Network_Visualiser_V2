@@ -22,9 +22,16 @@ def load_guide_step(step):
         page_name = f'guide_{step}.html'
     return flask.render_template(page_name)
 
+
 @app.route('/graph')
 def load_graph():
     return flask.render_template('graph.html')
+
+
+@app.route('/plot/<string:plot_name>')
+def load_perceptron_AND_plot(plot_name):
+    template_name = plot_name + '.html'
+    return flask.render_template(template_name)
 
 if __name__ == '__main__':
     app.run()

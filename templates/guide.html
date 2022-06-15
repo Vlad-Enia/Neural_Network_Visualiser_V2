@@ -9,6 +9,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
         <script src="../static/scripts/drawGraph.js"></script>
         <script src="../static/scripts/guideScript.js"></script>
@@ -82,8 +83,8 @@
                     <li>
                         <h5>
                             The simplest kind of neural network is the <b>perceptron</b> network, which consists of a single layer containing only one neuron. The inputs are fed directly into this neuron
-                            via a series of weights. The sum of the products between each input and its respective weight is computed and if the value of the sum is above some threshold (usually <i>0</i>)
-                            the neuron fires and outputs the activated value (typically <i>1</i>). Otherwise, it outputs the deactivated value (typically <i>-1</i> or <i>0</i>). Combining more than one of
+                            via a series of weights. The sum of the products between each input and its respective weight is computed and if the value of the sum is above some threshold (usually \(0\))
+                            the neuron fires and outputs the activated value (typically \(1\)). Otherwise, it outputs the deactivated value (typically \(-1\) or \(0\)). Combining more than one of
                             the perceptron neuron results in a <b>single-layer perceptron</b> network.
                         </h5>
                         <br>
@@ -104,62 +105,157 @@
                             Because it is described by a linear equation, the perceptron is a <b>linear classifier</b>. Therefore, in a two-dimensional space, the perceptron is described by a line, while in space
                             with 3 or more dimensions the perceptron is described by a hyperplane.
                         </h5>
+                        <h5>
+                            Being a linear classifier, the perceptron can only classify <b>linearly separable</b> datasets.
+                        </h5>
+                        <div class="columns-div">
+                            <figure class="plot-div">
+                                <div id="plot-div-perceptron_AND" ></div>
+                                <figcaption>
+                                    The Perceptron, being a linear classifier, successfully learns the AND function, as its graph is linearly separable.
+                                </figcaption>
+                            </figure>
+                            <figure class="plot-div">
+                                <div id="plot-div-perceptron_XOR" ></div>
+                                <figcaption>
+                                    As for the XOR function, because its graph is not linearly separable, the Perceptron is unable to classify it correctly.
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <br>
                     </li>
                     <li>
                         <h5>
-                            The most common type of neural networks architectures is the <b>feed forward</b> (also known as the <b>multi-layer perceptron</b>).
-                            These networks are organized composed of at least 3 <b>layers</b> of neurons. Each node from one layer is connected through <b>weighted edges</b> to all the neurons on the next layer.
+                            The most common type of neural networks architectures is the <b>feed-forward</b> (also known as the <b>multi-layer perceptron</b>).
+                            These networks are composed of at least three <b>layers</b> of neurons. Each node from one layer is connected through <b>weighted edges</b> to all the neurons on the next layer.
+                            These type of networks is the heart of <b>Deep Learning</b>.
+                        </h5>
+                        <figure>
+                            <div id="general-nn" class="nn-graph-div"></div>
+                            <figcaption>
+                                General depiction of feed-forward neural network: directed graphs, where each node represents neuron, and each edge represents a weighted link between them (i.e. every connection or edge
+                                between a neuron on a layer and another has an associated weight to it)<br>
+                                It can be observed that the network is organised in layers. It starts with the input layer, colored in blue. The last layer (rightmost one), is the output layer, also colored in blue
+                                The ones in the middle, colored in green, are the hidden layers.
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li>
+                        <h5>
+                            Before we discuss layers, first, we should establish some notations:
+                        </h5>
+                        <ul>
+                            <li>
+                                \(w_{ji}^{l}\) - the weight from the \(j^{th}\) neuron on the \(l-1\) layer, to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(b_{i}^{l}\) - bias associated to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(act_{l}( )\) - the activation function associated to the \(l\) layer;
+                            </li>
+                            <li>
+                                \(y_{i}^{l}\) - output of the \(i^{th}\) neuron on the \(l\) layer, equal to \(act_{l}(z_{i}^{l})\)<br>
+                                if \(l=1\) (i.e. the input layer),  \(y_{i}^{l} = x_{i}\), with \(x_{i}\) being an instance
+                                from the training data-set;<br>
+
+                            </li>
+                            <li>
+                                \(z_{i}^{l}\) - weighted sum of the inputs of the \(i^{th}\) neuron on the \(l\) layer, equal to $$\sum_{j} = y_{j}^{l-1} * w_{ji}^{l} + b_{i}^{l}$$<br>
+                                if \(l=1\) (i.e. the input layer), then no such sum is computed, as the output of an input neuron is equal to its input;
+                            </li>
+                        </ul>
+                        <br>
+                    </li>
+                    <li>
+                        <h5>
+                            The <b>input layer</b> is the very beginning of the workflow for the neural network, as its role is to bring the training data into the system for further processing by subsequent layers. It
+                            consists of "passive neurons", that don't apply any processing on the data, compared to the perceptron, that computes the weighted sum and then applies the step activation function. The role
+                            a passive neuron is to further pass the data to the next layer. Therefore, the output of a neuron from the input layer is the same as the input.
+                        </h5>
+                        <h5>
+                            As mentioned above, every neuron on the input layer is connected to all the neurons on the next layer.
+                        </h5>
+                        <h5>
+                            The most important thing about the input layer is the number of neurons, that should match the dimension of the training data-set. For example, if we want to train a neural network on images
+                            of a resolution of 20x30, then we would need an input layer with \(20 * 30 = 600\) neurons. For the didactic purpose of this app, we will only classify <b>two-dimensional</b> data (i.e. instances of
+                            points with \(x\) and \(y\) coordinates). Therefore, we will only work with neural networks with two neurons on the input layer: one that will pass the \(x\) coordinate of an instance, and
+                            one that will pass the \(y\) coordinate. A list of labels, one for each point from the training data-set, either positive or negative will be provided. The goal is to design and train a
+                            neural network that correctly classifies (i.e. for an input instance, the prediction should have a value as close as possible the actual label) as many points as possible and also be able to
+                            correctly classify new instances.
+
+                        </h5>
+                        <div class="columns-div">
+                            <figure class="plot-div">
+                                <div id="plot-div-moons_data_set" ></div>
+                                <figcaption>
+                                    An example of a two-dimensional dataset.
+                                </figcaption>
+                            </figure>
+                            <figure class="plot-div">
+                                <div id="plot-div-moons_data_set_classified" ></div>
+                                <figcaption>
+                                    The same two-dimensional dataset, but classified using a neural network.
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </li>
+                    <li>
+                        <h5>
+                            A <b>hidden layer</b> is any layer between the input and the output layer of a neural network. The flow of the data for a neuron \(i\) on a hidden layer \(l\) is similar to the perceptron's: compute the
+                            weighted sum all the inputs (i.e. the output of all the neurons on the previous layer) \(z_{i}^{l}\), apply the associated \(act_{l}( )\) activation function and then output the result \(y_{i}^{l}\).
+                            This output will be then be, in turn, an input for all the neurons on the next layer, and so on, until the output layer.
+                        </h5>
+                        <h5>
+                            Increasing the number of hidden layers and/or the number of neurons per hidden layer is usually needed for classifying complex data-sets, but it obviously increases training time.
                         </h5>
                     </li>
                     <li>
                         <h5>
-                            A neural network with at least three layers (i.e. an input layer, an output layer and at least one hidden layer) is called a <b>deep neural network</b>. These types of
-                            networks are the heart of <b>Deep Learning</b>.
+                            The <b>output layer</b> is similar to a hidden layer, the only difference being that it is the last layer of the model. Therefore, the outputs of the neurons of this layer gives the output, or the
+                            <b>prediction</b> of the neural network. Like the input layer, it is important to choose an appropriate number of neurons on the output layer, depending on how we would like to interpret the prediction.<br>
+                            For example, if we would like to classify a data-set of handwritten digits, we would have, as input, a data-set of photos for each digit and for the output, we can have 10 neurons, each of them corresponding
+                            to a digit. We can consider the output of each neuron \(i\) as its degree of confidence for the prediction that the input given is the digit \(i\). In other words, if we would feed to the network an image
+                            of the digit \(5\), if it is properly trained, the output of the \(i^{th}\) neuron on the output layer should be much bigger than the output of the other neurons.
                         </h5>
                     </li>
                 </ul>
                 <br>
-                <figure>
-                    <div id="general-nn" class="nn-graph-div"></div>
-                    <figcaption>
-                        Google Trend showing more attention towards <b>deep learning</b> in the recent years, compared to other machine learning algorithms.<br>
-                        Source: <a href="https://ieeexplore.ieee.org/document/8373692">Deep Learning for IoT Big Data and Streaming Analytics: A Survey</a>
-                    </figcaption>
-                </figure>
-                <br>
 
                 <br>
-                <h4>What is <b>Deep Learning?</b></h4>
-                <br>
-                <h5>
-                    <b>Deep learning</b> is a subset of <b>Machine Learning</b> that uses algorithms inspired by the structure and function of the human brain called <b>Neural Networks</b>.
-                    As a result, these networks attempt to simulate the behavior of the human brain by "learning" from large amounts of data. Compared to machine learning algorithms, which
-                    work with pre-processed data in which specific features are extracted in order to enable the model to learn, deep learning eliminates some data pre-processing, by automating
-                    feature extraction, thus removing some dependency on human experts.
-                </h5>
-                <br>
 
-                <h5>
-                    As a result, almost every technical university around the globe is currently offering
-                    <b>Neural Networks</b> classes, either through dedicated courses, or at least included
-                    as chapters in <b>Artificial Intelligence</b> or <b>Machine Learning</b> related courses.
-                    As a reference, this <a href="https://www.classcentral.com/subject/neural-networks">list</a>
-                    contains only the free (but still, a very large number of)  Neural Networks courses and MOOCs
-                    from top universities around the world like Stanford, MIT, Michigan, Higher School of Economics and many more.
-                </h5>
-                <h5>
-                    Even though neural networks are very popular, one of their biggest disadvantages is their <b>black box</b> nature.
-                    What is a black box? This <a href="https://www.onlinecjc.ca/article/S0828-282X(21)00703-0/fulltext">paper</a> gives
-                    a very good definition: <i>"Black Box is shorthand for models that are sufficiently complex that they are not
-                    straightforwardly interpretable to humans"</i>. Therefore, neural networks are generally hard to understand for
-                    newcomers.
-                </h5>
-                <h5>
-                    As a result, <b>NNViz</b> offers a didactic and informative solution, by enabling an user to design different neural network architectures,
-                    either by following a step-by-step guide, or directly, visually interact and train their neural networks depicted as graphs, see how different
-                    parameters (such as weights) change during the training process, feed an input instance with a suggestive animation that illustrates the activation
-                    of each neuron, as well as the raw output of the network (i.e. the score given by each neuron on the output layer).
-                </h5>
+{#                <br>#}
+{#                <h4>What is <b>Deep Learning?</b></h4>#}
+{#                <br>#}
+{#                <h5>#}
+{#                    <b>Deep learning</b> is a subset of <b>Machine Learning</b> that uses algorithms inspired by the structure and function of the human brain called <b>Neural Networks</b>.#}
+{#                    As a result, these networks attempt to simulate the behavior of the human brain by "learning" from large amounts of data. Compared to machine learning algorithms, which#}
+{#                    work with pre-processed data in which specific features are extracted in order to enable the model to learn, deep learning eliminates some data pre-processing, by automating#}
+{#                    feature extraction, thus removing some dependency on human experts.#}
+{#                </h5>#}
+{#                <br>#}
+{##}
+{#                <h5>#}
+{#                    As a result, almost every technical university around the globe is currently offering#}
+{#                    <b>Neural Networks</b> classes, either through dedicated courses, or at least included#}
+{#                    as chapters in <b>Artificial Intelligence</b> or <b>Machine Learning</b> related courses.#}
+{#                    As a reference, this <a href="https://www.classcentral.com/subject/neural-networks">list</a>#}
+{#                    contains only the free (but still, a very large number of)  Neural Networks courses and MOOCs#}
+{#                    from top universities around the world like Stanford, MIT, Michigan, Higher School of Economics and many more.#}
+{#                </h5>#}
+{#                <h5>#}
+{#                    Even though neural networks are very popular, one of their biggest disadvantages is their <b>black box</b> nature.#}
+{#                    What is a black box? This <a href="https://www.onlinecjc.ca/article/S0828-282X(21)00703-0/fulltext">paper</a> gives#}
+{#                    a very good definition: <i>"Black Box is shorthand for models that are sufficiently complex that they are not#}
+{#                    straightforwardly interpretable to humans"</i>. Therefore, neural networks are generally hard to understand for#}
+{#                    newcomers.#}
+{#                </h5>#}
+{#                <h5>#}
+{#                    As a result, <b>NNViz</b> offers a didactic and informative solution, by enabling an user to design different neural network architectures,#}
+{#                    either by following a step-by-step guide, or directly, visually interact and train their neural networks depicted as graphs, see how different#}
+{#                    parameters (such as weights) change during the training process, feed an input instance with a suggestive animation that illustrates the activation#}
+{#                    of each neuron, as well as the raw output of the network (i.e. the score given by each neuron on the output layer).#}
+{#                </h5>#}
             </div>
 
         </div>

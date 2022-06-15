@@ -13,6 +13,7 @@
     <orderEntry type="library" name="bootstrap" level="application" />
     <orderEntry type="library" name="vis" level="application" />
     <orderEntry type="library" name="mathjax" level="application" />
+    <orderEntry type="library" name="plotly-2.12.1" level="application" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
