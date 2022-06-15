@@ -33,5 +33,6 @@ def load_perceptron_AND_plot(plot_name):
     template_name = plot_name + '.html'
     return flask.render_template(template_name)
 
+
 if __name__ == '__main__':
     app.run()
