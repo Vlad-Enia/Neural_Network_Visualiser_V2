@@ -5,11 +5,18 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/drawGraph.js"></script>
+        <script src="../static/scripts/drawPlot.js"></script>
+        <script src="../static/scripts/guide2Script.js"></script>
+        <link rel="stylesheet" href="../static/stylesheets/guideStyle.js.css"/>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
-        <link rel="stylesheet" href="../static/stylesheets/progress.css">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+
         <title>NNViz</title>
     </head>
     <body>
@@ -28,6 +35,7 @@
             </nav>
         </div>
         <div class="header">
+            <link rel="stylesheet" href="../static/stylesheets/progress.css"/>
             <h2><b>Step 2:</b> Configure network architecture</h2>
             <div class="progress">
                 <div class="circle done">
@@ -63,7 +71,140 @@
             </div>
         </div>
         <div id="content">
-            <div class="introduction">
+            <div id="why-div" class="introduction">
+                <ul>
+                    <li>
+                        <h5>Before we discuss layers, first, we should establish some notations:</h5>
+                        <ul>
+                            <li>
+                               \(w_{ji}^{l}\) - the weight from the \(j^{th}\) neuron on the \(l-1\) layer, to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(b_{i}^{l}\) - bias associated to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(act_{l}( )\) - the activation function associated to the \(l\) layer;
+                            </li>
+                            <li>
+                                \(y_{i}^{l}\) - output of the \(i^{th}\) neuron on the \(l\) layer, equal to \(act_{l}(z_{i}^{l})\)<br>
+                                if \(l=1\) (i.e. the input layer),  \(y_{i}^{l} = x_{i}\), with \(x_{i}\) being an instance
+                                from the training data-set;<br>
+                            </li>
+                            <li>
+                                \(z_{i}^{l}\) - weighted sum of the inputs of the \(i^{th}\) neuron on the \(l\) layer, equal to $$\sum_{j} = y_{j}^{l-1} * w_{ji}^{l} + b_{i}^{l}$$
+                                if \(l=1\) (i.e. the input layer), then no such sum is computed, as the output of an input neuron is equal to its input;
+                            </li>
+                        </ul>
+                        <br>
+                    </li>
+                    <li>
+                        <h5>
+                            The <b>input layer</b> is the very beginning of the workflow for the neural network, as its role is to bring the training data into the system for further processing by subsequent layers. It
+                            consists of "passive neurons", that don't apply any processing on the data, compared to the perceptron, that computes the weighted sum and then applies the step activation function. The role
+                            a passive neuron is to further pass the data to the next layer. Therefore, the output of a neuron from the input layer is the same as the input.
+                        </h5>
+                        <h5>
+                            As mentioned above, every neuron on the input layer is connected to all the neurons on the next layer.
+                        </h5>
+                        <h5>
+                            The most important thing about the input layer is the number of neurons, that should match the dimension of the training data-set. For example, if we want to train a neural network on images
+                            of a resolution of 20x30, then we would need an input layer with \(20 * 30 = 600\) neurons. For the didactic purpose of this app, we will only classify <b>two-dimensional</b> data (i.e. instances of
+                            points with \(x\) and \(y\) coordinates). Therefore, we will only work with neural networks with two neurons on the input layer: one that will pass the \(x\) coordinate of an instance, and
+                            one that will pass the \(y\) coordinate.
+                        </h5>
+                        <h5>
+                            A list of <b>labels</b>, one for each point from the training data-set. The goal is to design and train a neural network that correctly classifies (i.e. for an input instance, the prediction should
+                            have a value as close as possible the actual label) as many points as possible and also be able to <b>correctly classify new instances</b>.
+                        </h5>
+
+                        <br>
+                    </li>
+                    <li>
+                        <h5>
+                            A <b>hidden layer</b> is any layer between the input and the output layer of a neural network. The flow of the data for a neuron \(i\) on a hidden layer \(l\) is similar to the perceptron's: compute the
+                            weighted sum all the inputs (i.e. the output of all the neurons on the previous layer) \(z_{i}^{l}\), apply the associated \(act_{l}( )\) activation function and then output the result \(y_{i}^{l}\).
+                            This output will be then be, in turn, an input for all the neurons on the next layer, and so on, until the output layer.
+                        </h5>
+                        <h5>
+                            Increasing the number of hidden layers and/or the number of neurons per hidden layer is usually needed for classifying complex data-sets, but it obviously increases training time.
+                        </h5>
+                    </li>
+                    <li>
+                        <h5>
+                            The <b>output layer</b> is similar to a hidden layer, the only difference being that it is the last layer of the model. Therefore, the outputs of the neurons of this layer gives the output, or the
+                            <b>prediction</b> of the neural network. Like the input layer, it is important to choose an appropriate number of neurons on the output layer, depending on how we would like to interpret the prediction.<br>
+                            For example, if we would like to classify a data-set of handwritten digits, we would have, as input, a data-set of photos for each digit and for the output, we can have 10 neurons, each of them corresponding
+                            to a digit. We can consider the output of each neuron \(i\) as its degree of confidence for the prediction that the input given is the digit \(i\). In other words, if we would feed to the network an image
+                            of the digit \(5\), if it is properly trained, the output of the \(i^{th}\) neuron on the output layer should be much bigger than the output of the other neurons.
+                        </h5>
+                    </li>
+                </ul>
+                <br>
+            </div>
+            <div class="configure-nn">
+                <div class="configure-nn-panel">
+                    <form class="configure-nn-form">
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Display Network</button>
+                            </div>
+                            <div class="col">
+                                <div class="form-group" id="configure-nn-form-n-layers">
+                                    <label for="n-layers-input" class="form-label">Hidden layers number</label>
+                                    <input type="number" min="1" max="6" step="1" class="form-control" id="n-layers-input" name="n-layers" value='1'>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-1" id="layer-1-label" class="form-label">\(1^{st}\) hidden layer size</label>
+                                    <input type="number" min="2" max="10" step="1" class="form-control" id="layer-1" name="layer-1" value='2'>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-2" id="layer-2-label" hidden class="form-label">\(2^{nd}\) hidden layer size</label>
+                                    <input type="hidden" min="2" max="10" step="1" class="form-control" id="layer-2" name="layer-2" value='2'>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-3" id="layer-3-label" hidden class="form-label">\(3^{nd}\) hidden layer size</label>
+                                    <input type="hidden" min="2" max="10" step="1" class="form-control" id="layer-3" name="layer-3" value='2'>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-4" id="layer-4-label" hidden class="form-label">\(4^{th}\) hidden layer size</label>
+                                    <input type="hidden" min="2" max="10" step="1" class="form-control" id="layer-4" name="layer-4" value='2'>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-5" id="layer-5-label" hidden class="form-label">\(5^{th}\) hidden layer size</label>
+                                    <input type="hidden" min="2" max="10" step="1" class="form-control" id="layer-5" name="layer-5" value='2'>
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="layer-6" id="layer-6-label" hidden class="form-label">\(6^{th}\) hidden layer size</label>
+                                    <input type="hidden" min="2" max="10" step="1" class="form-control" id="layer-6" name="layer-6" value='2'>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <br>
+                <div id="nn-graph-div">
+                    <div id="nn-graph-canvas-div">
+
+                    </div>
+                </div>
             </div>
         </div>
     </body>

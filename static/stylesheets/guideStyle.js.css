@@ -33,3 +33,39 @@ figcaption{
     padding-bottom: 10px;
 }
 
+.configure-nn{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.configure-nn-panel{
+    width: 100%;
+}
+
+.configure-nn-graph{
+    width: 100%;
+}
+
+.col{
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#nn-graph-canvas-div{
+    width: 100%;
+}
+
+#nn-graph-div{
+    width: 100%;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    box-shadow: #444444;
+}
+

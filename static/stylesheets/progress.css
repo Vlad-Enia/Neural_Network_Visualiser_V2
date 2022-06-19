@@ -5,12 +5,12 @@
     --lighter-accent-color: rgb(148,163,210);
 }
 
-*, *:after, *:before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Open Sans", serif;
-}
+/**, *:after, *:before {*/
+/*  margin: 0;*/
+/*  padding: 0;*/
+/*  box-sizing: border-box;*/
+/*  font-family: "Open Sans", serif;*/
+/*}*/
 
 /* Form Progress */
 .progress {
@@ -20,6 +20,11 @@
   text-align: center;
   background-color: var(--background-color);
 }
+
+.progress p{
+  font-weight: bold;
+}
+
 .progress .circle,
 .progress .bar {
   display: inline-block;

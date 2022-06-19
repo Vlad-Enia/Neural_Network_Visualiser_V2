@@ -33,7 +33,7 @@ body{
 #content{
     display: flex;
     flex-direction: column;
-    padding: 20px 300px 100px;
+    padding: 20px 100px 100px;
     width: 100%;
 }
 
@@ -73,6 +73,20 @@ body{
 #step-process > h5, #predefined > h5{
     font-weight: lighter;
     text-align: center;
+}
+
+p{
+    font-size: 20px;
+    font-weight: lighter;
+}
+
+li > ul > li {
+    font-size: 18px;
+    font-weight: lighter;
+}
+
+li > ul {
+    margin-top: -10px;
 }
 
 .introduction{

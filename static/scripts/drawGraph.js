@@ -2,9 +2,10 @@ const NODE_BORDER_COLOR = '#222222'
 const INPUT_OUTPUT_LAYER_COLOR = 'lightblue'
 const HIDDEN_LAYER_COLOR = 'lightgreen'
 const MAX_NB_OF_NODES_PER_LAYER_THRESHOLD = 7
-const NODE_SPACING = 17.14
-const SPRING_LENGTH = 14.28
+const DEFAULT_NODE_DISTANCE = 120
+const DEFAULT_SPRING_LENGTH = 100
 const MIN_CONTAINER_HEIGHT_PER_NODE = 70
+
 
 let options = {
         configure: {
@@ -15,6 +16,7 @@ let options = {
             borderWidth: 2,
             label: '',
             margin: 20,
+            value: 1,
             scaling: {
                 label: {
                     enabled: true,
@@ -22,12 +24,10 @@ let options = {
                     max: 30
                 }
             },
-            value: 1,
+            color: {border: NODE_BORDER_COLOR,},
         },
         edges: {
-            color: {
-                color: 'black',
-            },
+            color: 'black',
             width: 1,
             selectionWidth: function (width) {return width*5;},
             smooth: {
@@ -48,46 +48,28 @@ let options = {
                 strokeColor: 'whitesmoke'
             }
         },
-        interaction: {
-            dragNodes: true,
-            hideEdgesOnDrag: false,
-            hideNodesOnDrag: false
-        },
         layout: {
             hierarchical: {
                 enabled: true,
                 direction: "LR",
                 levelSeparation: 400,
-                nodeSpacing: 200,
-                blockShifting: false,
+                blockShifting: true,
                 edgeMinimization: false,
                 parentCentralization: false,
-                sortMethod: "hubsize"
             },
-            improvedLayout: true,
-            randomSeed: 0
         },
         physics: {
             enabled: true,
-            stabilization: {
-                enabled: true,
-                fit: true,
-                iterations: 1000,
-                onlyDynamicEdges: false,
-                updateInterval: 50
-            },
+            solver: 'hierarchicalRepulsion',
             hierarchicalRepulsion: {
                 nodeDistance: 120,
                 springLength: 100
-            },
-            solver: 'hierarchicalRepulsion'
+            }
         }
     }
 
 
 function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
-
-
     // var nodeList = [
     //     {"id: "0_0", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
     //     {"id: "0_1", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
@@ -151,24 +133,22 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
     //     {"from: "1_5", "to: "2_0"},
     //     {"from: "1_5", "to: "2_1"},
     // ]);
-
-
     let nodeList = []
+    console.log(layerSizeList)
     for (let layer = 0; layer < numberOfLayers; layer++){
         for (let nodeIndex = 0; nodeIndex < layerSizeList[layer]; nodeIndex++){
             let nodeId = `${layer}_${nodeIndex}`
             let nodeColor;
             if (layer === 0 || layer === (numberOfLayers - 1))
-                nodeColor = {border:NODE_BORDER_COLOR, background:INPUT_OUTPUT_LAYER_COLOR}
+                nodeColor = {background:INPUT_OUTPUT_LAYER_COLOR}
             else
-                nodeColor = {border:NODE_BORDER_COLOR, background:HIDDEN_LAYER_COLOR}
+                nodeColor = {background:HIDDEN_LAYER_COLOR}
             let node = {id: nodeId, level: layer, color: nodeColor}
             nodeList.push(node)
         }
     }
 
     let edgeList = []
-
     for (let layer = 0; layer < numberOfLayers-1; layer++){
         let fromLayerNodeList = nodeList.filter(element => element.level === layer)
         let toLayerNodeList = nodeList.filter(element => element.level === layer+1)
@@ -217,8 +197,11 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
     //     options.physics.hierarchicalRepulsion.springLength = 200
     // }
 
+    options.physics.hierarchicalRepulsion.nodeDistance = DEFAULT_NODE_DISTANCE
+    options.physics.hierarchicalRepulsion.springLength = DEFAULT_SPRING_LENGTH
+
     if(maximumNumberOfNeuronsOnALayer > MAX_NB_OF_NODES_PER_LAYER_THRESHOLD){
-        let dif = (maximumNumberOfNeuronsOnALayer - MAX_NB_OF_NODES_PER_LAYER_THRESHOLD) * 5.5
+        let dif = (maximumNumberOfNeuronsOnALayer - MAX_NB_OF_NODES_PER_LAYER_THRESHOLD) * 7
         options.physics.hierarchicalRepulsion.nodeDistance += dif
         options.physics.hierarchicalRepulsion.springLength += dif
     }
@@ -277,10 +260,11 @@ function drawPerceptron(inputs, inputSize, weights){
 
     let data = {nodes: new vis.DataSet(nodeList), edges: new vis.DataSet(edgeList)}
     let container = $('#perceptron-div')
+    let containerElement = $('#perceptron-div')[0]
 
     let maximumNumberOfNeuronsOnALayer = inputSize + 2
     let containerHeight = MIN_CONTAINER_HEIGHT_PER_NODE * maximumNumberOfNeuronsOnALayer;
     container.css('height',containerHeight)
 
-    new vis.Network(container[0], data, options)
+    new vis.Network(containerElement, data, options)
 }
