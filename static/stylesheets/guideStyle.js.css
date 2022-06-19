@@ -69,3 +69,77 @@ figcaption{
     box-shadow: #444444;
 }
 
+.configure-dataset{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.configure-dataset-panel{
+    width: 40%;
+}
+
+.configure-dataset-plot{
+    width: 60%;
+}
+
+.container img{
+    /*border: 1px solid lightgray;*/
+    border-radius: 5px;
+}
+
+.container .col{
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 5px;
+    margin-left: 5%;
+}
+
+.container .col:hover{
+    border: 1px solid grey;
+    box-shadow: 0 0 5px 5px lightgrey;
+}
+
+.container .col.active{
+    border: 1px solid black;
+    box-shadow: 0 0 5px 5px grey;
+}
+
+.configure-dataset-plot-and-controls{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 5%;
+}
+
+.configure-dataset-plot{
+    height: 85%;
+    width: 100%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    padding-left: 5%;
+    padding-right: 5%;
+    background-color: white;
+}
+
+.configure-dataset-controls{
+    height: 15%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    margin-top: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+}
+
+.confirm-div{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 25px;
+}
+
+
+
+

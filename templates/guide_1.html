@@ -122,6 +122,93 @@
                 </ul>
                 <br>
             </div>
+            <div class="configure-dataset">
+                <div class="configure-dataset-panel">
+                    <div class="container">
+                        <div class="row" id="row_1">
+                            <div class="col" id="column_1_1">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_1_1.png" alt="" width="100%">
+                                </a>
+                            </div>
+                            <div class="col" id="column_1_2">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_1_2.png" alt="" width="100%">
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" id="row_2">
+                            <div class="col" id="column_2_1">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_2_1.png" alt="" width="100%">
+                                </a>
+                            </div>
+                            <div class="col" id="column_2_2">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_2_2.png" alt="" width="100%">
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" id="row_3">
+                            <div class="col" id="column_3_1">
+                                <a href="" >
+                                    <img src="../static/images/datasets/column_3_1.png" alt="" width="100%">
+                                </a>
+                            </div>
+                            <div class="col" id="column_3_2">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_3_2.png" alt="" width="100%">
+                                </a>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row" id="row_4">
+                            <div class="col" id="column_4_1">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_4_1.png" alt="" width="100%">
+                                </a>
+                            </div>
+                            <div class="col" id="column_4_2">
+                                <a href="">
+                                    <img src="../static/images/datasets/column_4_2.png" alt="" width="100%">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="configure-dataset-plot-and-controls">
+                    <div class="configure-dataset-plot"></div>
+                    <div class="configure-dataset-controls">
+                        <form id="dataset-form" action="{{ url_for("load_custom_dataset")}}" method ="post">
+                            <input type="hidden" type="hidden" value="" id="dataset-name" name="dataset_name">
+                            <div class="row">
+                                <div class="col">
+                                    <label hidden for="n_samples" class="form_label" id="n_samples-label">Nr. samples</label>
+                                    <input class="form-control" type="hidden" min="1" max="5000" step="1" id="n_samples" name="n_samples">
+                                </div>
+                                <div class="col">
+                                    <label hidden for="noise" class="form_label" id="noise-label">Noise</label>
+                                    <input class="form-control" type="hidden" min="0.01" max="10" step="0.01" id="noise" name="noise">
+                                </div>
+                                <div class="col">
+                                    <label hidden for="distance" class="form_label" id="distance-label">Distance</label>
+                                    <input class="form-control" type="hidden" min="1" max="100" step="1" id="distance" name="distance">
+                                    <label hidden for="factor" class="form_label" id="factor-label">Factor</label>
+                                    <input class="form-control" type="hidden" min="0.01" max="1" step="0.01" id="factor"  name="factor">
+                                </div>
+                                <div class="col">
+                                    <button hidden type="submit" class="btn btn-primary">Generate</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="confirm-div">
+                <a hidden id="confirm-dataset" href=""><button class="btn btn-primary">Confirm dataset configuration</button></a>
+            </div>
         </div>
     </body>
 </html>
