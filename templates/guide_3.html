@@ -5,8 +5,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/drawPlot.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="../static/stylesheets/guideStyle.js.css"/>
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
         <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
@@ -62,7 +65,67 @@
             </div>
         </div>
         <div id="content">
-            <div class="introduction">
+            <div id="why-div" class="introduction">
+                <ul>
+                    <li>
+                        <p>Let's remind the notations introduced in the previous step of the guide:</p>
+                        <ul>
+                            <li>
+                               \(w_{ji}^{l}\) - the weight from the \(j^{th}\) neuron on the \(l-1\) layer, to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(b_{i}^{l}\) - bias associated to the \(i^{th}\) neuron on the \(l\) layer;
+                            </li>
+                            <li>
+                                \(act_{l}( )\) - the activation function associated to the \(l\) layer;
+                            </li>
+                            <li>
+                                \(y_{i}^{l}\) - output of the \(i^{th}\) neuron on the \(l\) layer, equal to \(act_{l}(z_{i}^{l})\)<br>
+                                if \(l=1\) (i.e. the input layer),  \(y_{i}^{l} = x_{i}\), with \(x_{i}\) being an instance
+                                from the training data-set;<br>
+                            </li>
+                            <li>
+                                \(z_{i}^{l}\) - weighted sum of the inputs of the \(i^{th}\) neuron on the \(l\) layer, equal to $$\sum_{j} = y_{j}^{l-1} * w_{ji}^{l} + b_{i}^{l}$$
+                                if \(l=1\) (i.e. the input layer), then no such sum is computed, as the output of an input neuron is equal to its input;
+                            </li>
+                        </ul>
+                    </li>
+                    <br>
+                    <li>
+                        <p>
+                            Just like our brains, artificial neural networks are designed to learn from past information. The <b>segregation of information</b>
+                            plays a key role in helping neural networks function, ensuring that it learns from useful information, rather than get stuck on unvaluable
+                            data.
+                        </p>
+                        <p>
+                            <b>Activation functions</b> ensures information segregation because it basically decides whether the neuron should activate or not.
+                        </p>
+                    </li>
+                    <br>
+                    <li>
+                        <p>
+                            The role of an activation function is to transform the summed weighted input from the node into an output value to be fed to the next hidden layer
+                            or as output.
+                            Therefore, the <b>output</b> of a neuron \(i\) from a layer \(l \neq 1\)  is computed by applying the activation of that layer \(act_{l}( )\) to
+                            the weighted sum of the inputs \(z_{i}^{l}\) : \[ y_{i}^{l} = act_{l}(z_{i}^{l}) \]
+                        </p>
+                    </li>
+                    <br>
+                    <li>
+                        <p>
+                        Usually, all hidden layers use the same activation function. However, the output layer will typically use a different activation, depending on the goal,
+                        the format, or the type of prediction that we expect from the model.
+                        </p>
+                    </li>
+                    <li>
+                        <p>
+                            <b>Why</b> are activation functions needed for neural networks to work properly? Let's imagine a neural network without activation functions.
+                            Such a network would contain only neurons that perform <b>linear transformation</b> on the inputs. In this case, it doesn't matter how many hidden layers
+                            we add to our neural network, since the composition of two linear function is still a linear function. This will result in a network unable of handling more complex tasks.
+                        </p>
+                    </li>
+                </ul>
+                <br>
             </div>
         </div>
     </body>
