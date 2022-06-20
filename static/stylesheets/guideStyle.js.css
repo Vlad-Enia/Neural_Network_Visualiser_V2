@@ -57,6 +57,10 @@ figcaption{
     width: 100%;
 }
 
+#nn-graph-act-canvas-div{
+    width: 100%;
+}
+
 #nn-graph-div{
     width: 100%;
     height: 700px;
@@ -138,6 +142,11 @@ figcaption{
     display: flex;
     justify-content: center;
     padding-top: 25px;
+}
+
+.figure-div{
+    width: 100%;
+    height: 500px;
 }
 
 

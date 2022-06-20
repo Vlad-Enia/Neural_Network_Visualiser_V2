@@ -34,8 +34,9 @@ def load_graph():
 
 
 @app.route('/plot/<string:plot_name>')
-def load_perceptron_AND_plot(plot_name):
+def load_perceptron_and_plot(plot_name):
     template_name = plot_name + '.html'
+    print(plot_name)
     return flask.render_template(template_name)
 
 
@@ -53,7 +54,7 @@ def load_custom_dataset():
 
 def save_object(object, path):
     with open(path, 'wb+') as f:
-        pickle.dump(object, f)
+        pickle.dump(object, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 def save_dataset(dataset, labels, param_dict):
@@ -72,12 +73,32 @@ def confirm_dataset():
 @app.route('/confirm_network_architecture', methods=['POST'])
 def confirm_network_architecture():
     network_architecture = {
-        'nr_hidden_layers': request.form['nrHiddenLayers'],
-        'hidden_layer_size_list': np.array(request.form.getlist('hiddenLayerSizeList[]')).astype('int')
+        'nr_hidden_layers': int(request.form['nrHiddenLayers']),
+        'hidden_layer_size_list': np.array(request.form.getlist('hiddenLayerSizeList[]')).astype('int').tolist(),
+        'hidden_layer_activation_list': [],
+        'output_layer_activation': ''
     }
     save_object(network_architecture, './static/config/network_architecture.bin')
     return 'ok'
 
+
+@app.route('/retrieve_network_architecture')
+def retrieve_network_architecture():
+    with open('./static/config/network_architecture.bin', 'rb+') as f:
+        network_architecture = pickle.load(f)
+    return network_architecture
+
+
+@app.route('/confirm_network_activations', methods=['POST'])
+def confirm_network_activations():
+    network_architecture = {
+        'nr_hidden_layers': int(request.form['nr_hidden_layers']),
+        'hidden_layer_size_list': np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist(),
+        'hidden_layer_activation_list': request.form.getlist('hidden_layer_activation_list[]'),
+        'output_layer_activation': request.form['output_layer_activation']
+    }
+    save_object(network_architecture, './static/config/network_architecture.bin')
+    return 'ok'
 
 if __name__ == '__main__':
     app.run()

@@ -248,7 +248,7 @@ function drawPerceptron(inputs, inputSize, weights){
         id: 'invisible',
         shape: 'box',
         label:
-            '                  1, if z > threshold \n y = f(z) =  \n                  0, otherwise',
+            '                  1, if z >= threshold \n y = f(z) =  \n                  0, otherwise',
         level: 2,
         font:{
             align: 'left'

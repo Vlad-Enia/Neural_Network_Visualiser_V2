@@ -6,8 +6,12 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/drawGraph.js"></script>
         <script src="../static/scripts/drawPlot.js"></script>
+        <script src="../static/scripts/guide3Script.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.js.css"/>
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
@@ -113,8 +117,8 @@
                     <br>
                     <li>
                         <p>
-                        Usually, all hidden layers use the same activation function. However, the output layer will typically use a different activation, depending on the goal,
-                        the format, or the type of prediction that we expect from the model.
+                            Usually, all hidden layers use the same activation function. However, the output layer will typically use a different activation, depending on the goal,
+                            the format, or the type of prediction that we expect from the model.
                         </p>
                     </li>
                     <li>
@@ -123,9 +127,329 @@
                             Such a network would contain only neurons that perform <b>linear transformation</b> on the inputs. In this case, it doesn't matter how many hidden layers
                             we add to our neural network, since the composition of two linear function is still a linear function. This will result in a network unable of handling more complex tasks.
                         </p>
+                        <p>
+                            The network learns by repeatedly adjusting the weights and the biases in order to minimize the difference between the actual label (provided in the training dataset),
+                            and the predicted one. That difference is computed as an error, using a <b>Loss Function</b>. Therefore, the parameters are adjusted in order to minimize that function.
+                            The algorithm that performs these adjustments (the <b>backpropagation</b> algorithm) makes use of the <b>derivative</b> (<b>gradient</b>) of the activation function and
+                            provides better performance when the result of the gradient is related to the input.
+                        </p>
+                    </li>
+                    <br>
+                    <li>
+                        <h3>Binary Step Function</h3>
+                        <p>
+                            This activation function is used by the Perceptron. The input is compared to a certain threshold. If the input is greater than it, the neuron is activated. If not, the output,
+                            is not passed on to the next neuron:
+
+
+                        </p>
+                        <div class="figure-div">
+                            <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                <p>
+                                    \[
+                                        f(x) =
+                                        \begin{cases}
+                                            1 \text{ if $x \geq threshold$}\\
+                                            0 \text{ otherwise}
+                                        \end{cases}
+                                    \]
+                                </p>
+                                <div id="plot-div-binary_step_function_plot"></div>
+                                <figcaption>
+                                    Binary Step Function - Graph
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <br>
+                        <p>Although it is very simple to implement, the binary step function has some limitations:</p>
+                        <ul>
+                            <li>
+                                It cannot provide multi-value outputs. Therefore, it cannot be used for multi-class classification;
+                            </li>
+                            <li>
+                                The <b>gradient</b> of the step function is \(0\), which is not helpful for backpropagation.
+                            </li>
+                        </ul>
+                    </li>
+                    <br>
+                    <br>
+                    <li>
+                        <h3>The Linear Activation Function</h3>
+                        <p>
+                            This function is also known as the <b>"identity function"</b> and is basically equivalent to a <b>no-activation</b> scenario,
+                            as this functions does not modify in any way the input. Therefore, the neuron only passes the weighted sum of the inputs as output:
+
+                        </p>
+                        <div class="figure-div">
+                            <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                <p>\[f(x)=x\]</p>
+                                <div id="plot-div-linear_function_plot"></div>
+                                <figcaption>
+                                    Linear (Identity) Function - Graph
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <br>
+                        <p>The limitations of the linear activation function:</p>
+                        <ul>
+                            <li>
+                                Because using this function is the equivalent to not using any activation function, as presented above, all the layers of the neural network
+                                will behave as one, because the composition of two linear function is still linear.
+                            </li>
+                            <li>
+                                Because the <b>gradient</b> of this function is constant, it is still not useful for the backpropagation algorithm,
+                            </li>
+                        </ul>
+                    </li>
+                    <br><br>
+                    <li>
+                        <h3>Non-Linear Activation Functions</h3>
+                        <p>Non-Linear Activation Functions solve the following limitations of the binary step and the linear activation functions:</p>
+                        <ul>
+                            <li>Because their derivative is non-constant and, therefore, related with the input, it is now  possible to apply backpropagation.</li>
+                            <li>Using multiple layers now offers an advantage, as the output is a non-linear combination.</li>
+                        </ul>
+                        <br>
+                        <p>Let's look at some of the most used non-linear activation functions:</p>
+                        <ul>
+                            <br>
+                            <li>
+                                <h4>Sigmoid</h4>
+                                <p>
+                                    This function is also called the <b>Logistic Function</b>. It takes any real value and outputs values in the \((0,1)\) range: the bigger the input, the closer to \(1\)
+                                    the output is; the smaller the input, the closer to \(0\) the output is.
+                                </p>
+                                <div class="figure-div">
+                                    <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                        <p>\[ \sigma(x) = \frac{1}{1 + e ^{-x}} \]</p>
+                                        <div id="plot-div-sigmoid_function_plot"></div>
+                                        <figcaption>
+                                            Sigmoid (Logistic) Function - Graph
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <br>
+                                <p>The benefits of using the Sigmoid function:</p>
+                                <ul>
+                                    <li>Since its output is in the \((0,1)\) range, it is good for when we expect the output of the model to be a probability.</li>
+                                    <li>The Sigmoid function is <b>differentiable</b> and it produces a smooth gradient.</li>
+                                </ul>
+                                <br>
+                                <p>
+                                    The Sigmoid function has some limitations:
+                                </p>
+                                <ul>
+                                    <li>
+                                        Since its output is in the \((0,1)\) range, for binary classification problems, pre-processing of the input labels is needed, such that negative labels are \(0\) and positive labels are \(1\).
+                                        This also applies to multi-class classification problems.
+                                    </li>
+                                    <li>
+                                        Another limitation of the Sigmoid function is concerned with its derivative:
+                                        <div class="figure-div">
+                                            <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                                <p>\[ \sigma'(x) =  \sigma(x) * (1 - \sigma(x)) \]</p>
+                                                <div id="plot-div-sigmoid_derivative_function_plot"></div>
+                                                <figcaption>
+                                                    Sigmoid Derivative - Graph
+                                                </figcaption>
+                                            </figure>
+                                        </div>
+                                        <br>
+                                        As we can see from the above figure, the gradient values are only significant for inputs in the \([-3,3]\) range. As the gradient value approaches \(0\), for inputs \(\geq 3\) and \(\leq -3\),
+                                        the network ceases to learn and suffers from the <b>Vanishing gradient problem</b>.
+                                    </li>
+                                </ul>
+                            </li>
+                            <br>
+                            <br>
+                            <li>
+                                <h4>Tanh</h4>
+                                <p>
+                                    The Hyperbolic Tangent (Tanh) function is very similar to the Sigmoid function, the only difference being the output range of \((-1,1)\). Therefore, the bigger the input, the close to \(1\) the output is;
+                                    the smaller the input, the closer to \(-1\) the output is.
+
+                                    <div class="figure-div">
+                                        <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                            <p>\[ \tanh(x) = \frac{e^{x} - e^{-x}}{e^{x} + e^{-x}} \]</p>
+                                            <div id="plot-div-tanh_function_plot"></div>
+                                            <figcaption>
+                                                Hyperbolic Tangent (Tanh) - Graph
+                                            </figcaption>
+                                        </figure>
+                                    </div>
+                                </p>
+                                <p>Advantages of using the Tanh function:</p>
+                                <ul>
+                                    <li>The Hyperbolic Tangent function presents the same advantages as the Sigmoid function, plus the fact that it is zero-centered.</li>
+                                </ul>
+                                <br>
+                                <p>Limitations of the Tanh function:</p>
+                                <ul>
+                                    <li>Just like in the case of the Sigmoid function, we need to make sure that the input labels are in the range \([-1,1]\).</li>
+                                    <li>As we can see below, the derivative graph of the Tanh function is very similar to the Sigmoid. Therefore, it also suffers from the Vanishing Gradient Problem:</li>
+                                </ul>
+                                <br>
+                                <div class="figure-div">
+                                    <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                        <p>\[ \tanh'(x) = 1 - \tanh ^{2}(x) \]</p>
+                                        <div id="plot-div-tanh_derivative_function_plot"></div>
+                                        <figcaption>
+                                            Hyperbolic Tangent (Tanh) - Graph
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                            </li>
+                            <br>
+                            <li>
+                                <h4>ReLU</h4>
+                                <p>Also called the <b>Rectified Linear Unit</b>, it is very similar to the Linear function, but it activates if the input is \(\geq 0\).</p>
+                                <div class="figure-div">
+                                    <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                        <p>\[ relu(x) = \max(0,x) \]</p>
+                                        <div id="plot-div-relu_function_plot"></div>
+                                        <figcaption>
+                                            Rectified Linear Unit (ReLU) - Graph
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <p>Advantages of using the ReLU activation function:</p>
+                                <ul>
+                                    <li>
+                                        Although it gives an impression of a linear function, ReLU has a derivative function that allows for backpropagation while simultaneously
+                                        making it computationally efficient, since only a certain number of neurons are activated.
+                                    </li>
+                                    <li>
+                                        ReLU accelerates the convergence of gradient descent towards the global minimum of the <b>loss function</b> due to its linear, non-saturating property.
+                                    </li>
+                                </ul>
+                                <p>One limitation of this function is related to the gradient:</p>
+                                <div class="figure-div">
+                                    <figure class="plot-div" style="margin-left: 25%; margin-right: 50%">
+                                        <p>
+                                            \[
+                                                relu'(x) =
+                                                \begin{cases}
+                                                    1 \text{ if $x \geq 0$}\\
+                                                    0 \text{ otherwise}
+                                                \end{cases}
+                                            \]
+                                        </p>
+                                        <div id="plot-div-relu_derivative_function_plot"></div>
+                                        <figcaption>
+                                            ReLU Derivative - Graph
+                                        </figcaption>
+                                    </figure>
+                                </div>
+                                <p>The <b>Dying ReLU Problem</b> appears because the negative side of the graph of the gradient is \(0\), which causes the weights and biases to become "dead",
+                                since they are  not updated anymore.</p>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
                 <br>
+                <div class="configure-nn">
+                    <div class="configure-nn-panel">
+                        <form class="configure-activation-form">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-1-activation" id="layer-1-activation-label" class="form-label">\(1^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-1-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-2-activation" id="layer-2-activation-label" class="form-label">\(2^{nd}\) hidden layer activation</label>
+                                        <select hidden id="layer-2-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-3-activation" id="layer-3-activation-label" class="form-label">\(3^{rd}\) hidden layer activation</label>
+                                        <select hidden id="layer-3-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-4-activation" id="layer-4-activation-label" class="form-label">\(4^{th}\) hidden layer activation</label>
+                                        <select hidden id="layer-4-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-5-activation" id="layer-5-activation-label" class="form-label">\(5^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-5-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-6-activation" id="layer-6-activation-label" class="form-label">\(6^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-6-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-out-activation" id="layer-out-activation-label" class="form-label">Output layer activation</label>
+                                        <select hidden id="layer-out-activation" class="form-select">
+                                            <option value="relu" >ReLU</option>
+                                            <option value="sigmoid" selected>Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <br>
+                    <div id="nn-graph-div">
+                        <div id="nn-graph-act-canvas-div">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="confirm-div">
+                <a href="" id="confirm-network-activations">
+                    <button class="btn btn-primary">Confirm network activation functions</button>
+                </a>
             </div>
         </div>
     </body>

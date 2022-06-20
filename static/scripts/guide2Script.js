@@ -52,7 +52,7 @@ function addConfirmBehaviour() {
                 'hiddenLayerSizeList': hiddenLayerSizeList
             },
             success: function(response){
-                console.log(response)
+                window.location.href = '/guide/3'
             }
         })
     })
