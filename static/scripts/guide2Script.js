@@ -16,9 +16,28 @@ function onInputChange() {
     })
 }
 
+function retrieveDatasetParams(){
+    let dataset_params
+    $.ajax({
+        async: false,
+        method: 'GET',
+        url: '/retrieve_dataset_params',
+        success: function(response){
+            dataset_params = response
+        },
+        error: function(){
+            console.log('error')
+        }
+    })
+    return dataset_params
+}
+
+
 function addFormBehaviour() {
     $('.configure-nn-form').submit(function (event) {
         event.preventDefault()
+        let dataset_params = retrieveDatasetParams()
+        let n_colors = dataset_params['n_colors']
         let nrLayers = parseInt($('#n-layers-input').val())
         let layerSizeList = [2]
         for (let i = 1; i <= nrLayers; i++) {
@@ -27,13 +46,21 @@ function addFormBehaviour() {
             layerSizeList.push(layerSize)
         }
         nrLayers += 2;
-        layerSizeList.push(1)
+        let outputLayerSize;
+        if(n_colors === 2)
+            outputLayerSize = 1
+        else
+            outputLayerSize = n_colors
+        layerSizeList.push(outputLayerSize)
         drawCustomGraph(nrLayers, layerSizeList, '#nn-graph-canvas-div')
+        addConfirmBehaviour(outputLayerSize)
     })
 }
 
-function addConfirmBehaviour() {
-    $('.confirm-div #confirm-network-architecture').click(function (event) {
+function addConfirmBehaviour(outputLayerSize) {
+    let confirmButton =  $('.confirm-div #confirm-network-architecture')
+    confirmButton.removeAttr('hidden')
+    confirmButton.click(function (event) {
         event.preventDefault()
         let nrHiddenLayers = parseInt($('#n-layers-input').val())
         let hiddenLayerSizeList = []
@@ -48,8 +75,9 @@ function addConfirmBehaviour() {
             url: '/confirm_network_architecture',
             // dataType: 'json',
             data: {
-                'nrHiddenLayers': nrHiddenLayers,
-                'hiddenLayerSizeList': hiddenLayerSizeList
+                'nr_hidden_layers': nrHiddenLayers,
+                'hidden_layer_size_list': hiddenLayerSizeList,
+                'output_layer_size': outputLayerSize
             },
             success: function(response){
                 window.location.href = '/guide/3'
@@ -61,5 +89,4 @@ function addConfirmBehaviour() {
 $(document).ready(function () {
     onInputChange()
     addFormBehaviour()
-    addConfirmBehaviour()
 })
