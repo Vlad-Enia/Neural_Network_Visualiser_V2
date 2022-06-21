@@ -71,7 +71,7 @@ def confirm_dataset():
     dataset_name = request.form['dataset_name']
     fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_custom_plot(dataset_name, request.form)
     save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_dict)
-    return 'bv', 200
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
 @app.route('/retrieve_dataset_params')
@@ -116,6 +116,17 @@ def confirm_network_loss():
         network_architecture = pickle.load(f)
     network_architecture['loss_function'] = request.form['loss_function']
     save_object(network_architecture, './static/config/network_architecture.bin')
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
+@app.route('/confirm_optimizer', methods=['POST'])
+def confirm_optimizer():
+    with open('./static/config/network_architecture.bin', 'rb+') as f:
+        network_architecture = pickle.load(f)
+    network_architecture['learning_rate'] = request.form['learning_rate']
+    network_architecture['batch_size'] = request.form['batch_size']
+    network_architecture['epochs'] = request.form['epochs']
+    print(network_architecture)
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 

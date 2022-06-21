@@ -5,7 +5,9 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/guide5script.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
@@ -62,8 +64,135 @@
             </div>
         </div>
         <div id="content">
-            <div class="introduction">
+            <div class="introduction" id="why-div">
+                <ul>
+                    <li>
+                        <p>
+                            As mentioned in the previous step of the guide, the learning process of a neural network consists of
+                            repeatedly adjusting the network's parameters (weights and biases) in order to minimize the error,
+                            computed using a loss function. The algorithm that performs these adjustments is the <b>optimizer</b>
+                            of the neural network.
+                        </p>
+                    </li>
+                    <br>
+                    <li>
+                        <h4>Gradient Descent</h4>
+                        <p>
+                            <b>Gradient Descent</b> is one of the most popular deep learning optimizers. It estimates the error gradient for the current state of the model using
+                            the loss function, then updates the weights and the biases of the model according to it.
+                        </p>
+                        <p>
+                            A <b>gradient</b> is just another name for the <b>first derivative</b> of a function, which determines the slope
+                            of the tangent of the graph of the function.
+                        </p>
+                        <br>
+
+                    </li>
+                </ul>
+                <p>
+                    <div class="img-div" style="width: 100%; display: flex; align-items: center; justify-content: center">
+                        <figure>
+                            <img src="../static/images/gradient_illustration.png" width="600" alt="" >
+                            <br><br>
+                            <figcaption>
+                                The gradient (first derivative of a function) illustrated <br>
+                                Source: <a href="https://www.mathwarehouse.com/calculus/derivatives/what-is-meaning-of-first-order-derivative.php">Math Warehouse - What is the meaning of First Order Derivative</a>
+                            </figcaption>
+                        </figure>
+                    </div>
+                </p>
+                <p>
+                    Let's explore an example where we perform Gradient Descent on a perceptron that uses the linear activation function instead
+                    of the step activation function (also called the Adaline Perceptron):
+                </p>
+
+                <ol>
+                    <li>
+                        <p>First, compute the gradient of the loss function \((\frac{\partial L}{\partial w}, \frac{\partial L}{\partial b})\)</p>
+                        <ul>
+                            <li>Let \(x\) be the training dataset, represented as a vector</li>
+                            <li>The activation function: \(y = z = wx + b\)</li>
+                            <li>The loss function - Mean Squared Error: \(L(w,b) = \frac{1}{2n} \sum_x(t-y)^2\)</li>
+                            <li>Since the cost function has two parameters \(w\) and \(b\), we have to compute
+                                two partial derivatives:
+                                <ul>
+                                    <li>
+                                        \(\frac{\partial L}{\partial w} = \frac{\partial L}{\partial y} \frac{\partial y}{\partial w}\)
+                                    </li>
+                                    <li>
+                                        \(\frac{\partial L}{\partial b} = \frac{\partial L}{\partial y} \frac{\partial y}{\partial b}\)
+                                    </li>
+
+                                </ul>
+                                </li>
+                            <li>\(L' = -\frac{1}{n} \sum_x(t - y) y'\)</li>
+
+                            <li>In order to compute \(\frac{\partial L}{\partial w}\), we first compute \( \frac{\partial y}{\partial w} = \frac{\partial (wx+b)}{\partial w}\) = x</li>
+                            <li>Therefore, \(\frac{\partial L}{\partial w} = -\frac{1}{n} \sum_x(t-y)x\)</li>
+                            <li>The same goes for \(\frac{\partial L}{\partial b}\). \(\frac{\partial y}{\partial b} = 1\)</li>
+                            <li>Therefore, \(\frac{\partial L}{\partial b} = -\frac{1}{n} \sum_x(t-y)\)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p>In order to make the training smoother, a <b>learning rate</b> \(\eta \in (0,1)\) is chosen.</p>
+                    </li>
+                    <li>
+                        <p>Update parameters: </p>
+                        <ul>
+                            <li>
+                                adjust \(w\): \(w = w - \eta \frac{\partial L}{\partial w}\)
+                            </li>
+                            <li>adjust \(b\): \(b = b - \eta \frac{\partial L}{\partial b}\)</li>
+                        </ul>
+                    </li>
+                </ol>
+                <p>
+                    The computations above can be scaled to more neurons on a single layer. For a feed-forward network (with input, multiple hidden layers, and output layer), the computations above
+                    are only available for the output layer. In order to also adjust the weights between the previous layers, the <a href="https://docs.google.com/presentation/d/1eALB05FJQApzyqAB3mesD-C820V9AO6aDW2Pt6HTxBI/edit#slide=id.p22"><b>Backpropagation Algorithm</b></a> must be applied.
+                </p>
+                <p>Note that the adjustments were performed at the end of an epoch (i.e. after predicting the whole dataset \(x\)). Thus, \(x\), \(y\), \(t\) and \(w\) are vectors.</p>
+                <p>
+                    One way to speed up the learning process is by using <b>Stochastic Gradient Descent</b>, which is very similar to Gradient Descent, the only difference being that, instead
+                    making adjustments after predicting the whole dataset \(x\), we pick distinct, smaller samples, called <b>mini batches</b>, and perform the same computations as above for
+                    each one of them, until we process the whole dataset. The speed-up is by a factor of \(\frac{x\_size}{minibatch\_size}\).
+                </p>
+                <p>
+                    In an ideal situation, the (Stochastic) Gradient Descent algorithm should be applied until the loss function converges in a global minimum. The value of the <b>Learning Rate</b> is important. A large learning rate value allows the model to learn faster,
+                    at the cost of arriving on a suboptimal final set of weights. This is because the update on the parameters may be too large, making it impossible to converge in a minimum value of the loss function, resulting in an oscillation. A small value for the learning rate,
+                    usually ensures the convergence, but the learning process may be considerably slower. The learning rate is, therefore, a configurable hyper-parameter that usually takes values in the \(0,1\) range. Usually, for (Stochastic) Gradient Descent, a value between \(0.01\) and \(0.3\)
+                    is chosen, but you are free to experiment with any value in the \(0,1\) range.
+                </p>
+                <p>
+                    Another very important hyper-parameter is the number of <b>epochs</b>. As specified before, an epoch is done after all the instances of the training dataset are fed to the network.
+                </p>
+                <p>
+                    Please configure the following hyper-parameters:
+                </p>
+                <div class="configure-nn">
+                    <form id="configure-optimizer-form">
+                        <div class="row">
+                            <div class="col">
+                                <label for="learning-rate"  class="form-label">Learning rate</label>
+                                <input type="number" min="0.001" max="1" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label for="batch-size"  class="form-label">Batch size</label>
+                                <input type="number" min="1" max="50" step="1" id="batch-size" name="batch_size" value="25" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label for="epochs" class="form-label">Epochs</label>
+                                <input type="number" min="1" max="10000" step="1" id="epochs" name="epochs" value="1000" class="form-control">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Confirm</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
+
         </div>
     </body>
 </html>

@@ -69,7 +69,7 @@
                     <li>
                         <p>
                             As we mentioned in the previous step of the guide, the learning process of a neural network consists of repeatedly adjusting
-                            the network parameters (weights and biases) in order to minimize the difference between the predicted label (output) of the
+                            the network's parameters (weights and biases) in order to minimize the difference between the predicted label (output) of the
                             network and the actual label from the training dataset. That difference represents the <b>error</b> of the neural network, and
                             it is computed with the help of a <b>loss function</b>.
 
@@ -96,7 +96,7 @@
                             The Mean Squared Error is continuous and easily differentiable, which will be very useful in the training process, since the <b>Backpropagation</b>
                             algorithm uses the gradient of the loss function extensively in the training process:
                             \[
-                                MSE' = -\frac{1}{n} \sum_{i}^{n}(t_i - y_i)y_i'
+                                L_{MSE}' = -\frac{1}{n} \sum_{i}^{n}(t_i - y_i)y_i'
                             \]
                             where \(y_i'\) is the <b>gradient of the activation function</b>.
                         </p>

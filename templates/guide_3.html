@@ -130,7 +130,7 @@
                         <p>
                             The network learns by repeatedly adjusting the weights and the biases in order to minimize the difference between the actual label (provided in the training dataset),
                             and the predicted one. That difference is computed as an error, using a <b>Loss Function</b>. Therefore, the parameters are adjusted in order to minimize that function.
-                            The algorithm that performs these adjustments (the <b>backpropagation</b> algorithm) makes use of the <b>derivative</b> (<b>gradient</b>) of the activation function and
+                            The algorithm that performs these adjustments (the <b>Gradient Descent</b> algotithm) makes use of the <b>derivative</b> (<b>gradient</b>) of the activation function and
                             provides better performance when the result of the gradient is related to the input.
                         </p>
                     </li>
@@ -167,7 +167,7 @@
                                 It cannot provide multi-value outputs. Therefore, it cannot be used for multi-class classification;
                             </li>
                             <li>
-                                The <b>gradient</b> of the step function is \(0\), which is not helpful for backpropagation.
+                                The <b>gradient</b> of the step function is \(0\), which is not helpful for Gradient Descent.
                             </li>
                         </ul>
                     </li>
@@ -197,7 +197,7 @@
                                 will behave as one, because the composition of two linear function is still linear.
                             </li>
                             <li>
-                                Because the <b>gradient</b> of this function is constant, it is still not useful for the backpropagation algorithm,
+                                Because the <b>gradient</b> of this function is constant, it is still not useful for the Gradient Descent algorithm,
                             </li>
                         </ul>
                     </li>
@@ -206,7 +206,7 @@
                         <h3>Non-Linear Activation Functions</h3>
                         <p>Non-Linear Activation Functions solve the following limitations of the binary step and the linear activation functions:</p>
                         <ul>
-                            <li>Because their derivative is non-constant and, therefore, related with the input, it is now  possible to apply backpropagation.</li>
+                            <li>Because their derivative is non-constant and, therefore, related with the input, it is now  possible to apply Gradient Descent.</li>
                             <li>Using multiple layers now offers an advantage, as the output is a non-linear combination.</li>
                         </ul>
                         <br>
@@ -315,8 +315,8 @@
                                 <p>Advantages of using the ReLU activation function:</p>
                                 <ul>
                                     <li>
-                                        Although it gives an impression of a linear function, ReLU has a derivative function that allows for backpropagation while simultaneously
-                                        making it computationally efficient, since only a certain number of neurons are activated.
+                                        Although it gives an impression of a linear function, ReLU has a derivative function that works with Gradient Descent, while simultaneously
+                                        being computationally efficient, since only a certain number of neurons are activated.
                                     </li>
                                     <li>
                                         ReLU accelerates the convergence of gradient descent towards the global minimum of the <b>loss function</b> due to its linear, non-saturating property.
