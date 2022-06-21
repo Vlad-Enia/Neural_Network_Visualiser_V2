@@ -370,6 +370,11 @@
                                     \]
                                     where \(z_i^L\) is the weighted sum of the inputs of a neuron from the output layer.
                                 </p>
+                                <p>
+                                    One drawback of using the Softmax activation function is the that we need to perform preprocessing on class labels provided in the
+                                    training dataset. For example, for a three-class classification problem, with provided labels \([1, 2, 3]\), they need to be processed into a
+                                    probability distribution form, to match output of the neural network that uses Softmax on the output layer: \([1, 0, 0], [0, 1, 0], [0, 0, 1]\)
+                                </p>
                             </li>
                         </ul>
                     </li>

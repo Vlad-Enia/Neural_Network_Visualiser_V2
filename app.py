@@ -91,12 +91,19 @@ def retrieve_network_architecture():
 
 @app.route('/confirm_network_activations', methods=['POST'])
 def confirm_network_activations():
-    network_architecture = {
-        'nr_hidden_layers': int(request.form['nr_hidden_layers']),
-        'hidden_layer_size_list': np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist(),
-        'hidden_layer_activation_list': request.form.getlist('hidden_layer_activation_list[]'),
-        'output_layer_activation': request.form['output_layer_activation']
-    }
+    with open('./static/config/network_architecture.bin', 'rb+') as f:
+        network_architecture = pickle.load(f)
+    network_architecture['hidden_layer_activation_list'] = request.form.getlist('hidden_layer_activation_list[]')
+    network_architecture['output_layer_activation'] = request.form['output_layer_activation']
+    save_object(network_architecture, './static/config/network_architecture.bin')
+    return 'ok'
+
+
+@app.route('/confirm_network_loss', methods=['POST'])
+def confirm_network_loss():
+    with open('./static/config/network_architecture.bin', 'rb+') as f:
+        network_architecture = pickle.load(f)
+    network_architecture['loss_function'] = request.form['loss_function']
     save_object(network_architecture, './static/config/network_architecture.bin')
     return 'ok'
 

@@ -37,13 +37,14 @@ function addConfirmBehaviour(nrHiddenLayers, response){
             hiddenLayersActivation.push(activation)
         }
         let outputLayerActivation = $('#layer-out-activation').val()
-        response.hidden_layer_activation_list = hiddenLayersActivation
-        response.output_layer_activation = outputLayerActivation
         $.ajax({
             method: 'POST',
             url: '/confirm_network_activations',
             dataType: 'json',
-            data: response,
+            data: {
+                'hidden_layer_activation_list': hiddenLayersActivation,
+                'output_layer_activation': outputLayerActivation
+            },
             success: function(){
                 window.location.href = '/guide/4'
             },
@@ -55,7 +56,6 @@ function addConfirmBehaviour(nrHiddenLayers, response){
 }
 
 $(document).ready(function() {
-    console.log('ceva')
     drawPlot('binary_step_function_plot')
     drawPlot('linear_function_plot')
     drawPlot('sigmoid_function_plot')

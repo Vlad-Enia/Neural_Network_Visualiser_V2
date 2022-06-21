@@ -7,6 +7,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/guide4Script.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
@@ -83,11 +84,12 @@
                             labels. If we had \(n\) training instances and labels \(t\), for which the network predicted \(n\) outputs \(y\), then the formula for the
                             <b>MSE</b> is:
                             \[
-                                MSE = \frac{1}{2n} \sum_{i}^{n}(t_i - y_i)^{2}
+                                L_{MSE} = \frac{1}{2n} \sum_{i}^{n}(t_i - y_i)^{2}
                             \]
+                            where \(t_i\) is the actual label provided in the training dataset instance \(i\) and \(y_i\) is the predicted label by the network for the same instance.
                         </p>
                         <p>
-                            One thing to note about the MSE is that its formula resembles the one for the variance, which computes how far some elemets are
+                            One thing to note about the MSE is that its formula resembles the one for the variance, which computes how far some elements are
                             from the mean.
                         </p>
                         <p>
@@ -96,13 +98,71 @@
                             \[
                                 MSE' = -\frac{1}{n} \sum_{i}^{n}(t_i - y_i)y_i'
                             \]
-                            where \(y_i'\) is the gradient of the activation function.
+                            where \(y_i'\) is the <b>gradient of the activation function</b>.
                         </p>
                     </li>
+                    <br>
                     <li>
-                        <h4>Cross Entropy</h4>
+                        <h4>Cross-Entropy</h4>
+                        <p>
+                            The <b>Cross-Entropy</b> loss function is best used together with the <b>Softmax</b> activation function, because its purpose is to take output probabilities and
+                            measure the "distance" from the actual values (the labels provided in the training dataset). Therefore, each predicted class probability is compared to the
+                            actual class label (which is processed beforehand to its probability distribution form) and a <b>loss value</b> (i.e. a penalty) is computed. This value is
+                            logarithmic, yielding a large values (close to \(1\)) for large differences and a small values (close to \(0\)) for small differences.
+                        </p>
+                        <p>
+                            The Cross-Entropy function, for \(n\) training instances across \(m\) different classes is defined as
+                            \[
+                                L_{CE} = - \frac{1}{n} \sum_i^n ( \sum_j^m t_j \log(y_j) )
+                            \]
+                            where \(t_i\) is the actual truth value (either \(0\) or \(1\)) of the an instance \(i\) from the class \(j\) (a value provided in the training dataset) and \(y_j\)
+                            is the predicted probability for the same instance.
+                        </p>
+                        <p>
+                            In conclusion, this loss function is best suited for <b>multi-class classification problems</b> and is best used together with the <b>Softmax</b> activation function.
+                        </p>
+                    </li>
+                    <br>
+                    <li>
+                        <h4>Binary Cross-Entropy</h4>
+                        <p>
+                            The <b>Binary Cross-Entropy</b> loss function is a particular version of the Cross-Entropy, used in binary classification problems.
+                        </p>
+                        <p>
+                            Formula, for \(n\) training instances:
+                            \[
+                                L_{BCE} = - \frac{1}{n} \sum_i^n(t_i \log(y_i) + (1 - t_i) \log(1-y_i))
+                            \]
+                        </p>
+                        <p> As a result, this loss function is best suited for <b>binary classification problems</b> and is best used together with the <b>Sigmoid</b> activation on the output layer</p>
                     </li>
                 </ul>
+                <p>
+                    Having all of these in mind, you may choose a loss function for your configured network. You can also go back to the <a href="/guide/3">previous step</a> and change activation function on different layers.
+                </p>
+            </div>
+            <br>
+            <div class="configure-nn">
+                <form id="configure-loss-form">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="loss-function" id="loss-label" class="form-label"></label>
+                                <select id="loss-function" class="form-select">
+                                    <option selected value="mean_squared_error">Mean Squared Error</option>
+                                    <option value="categorical_crossentropy">Cross-Entropy</option>
+                                    <option value="binary_crossentropy">Binary Cross-Entropy</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <div>
+                    <a href="" id="confirm-network-loss">
+                        <button class="btn btn-primary">Confirm network loss function</button>
+                    </a>
+                </div>
             </div>
         </div>
     </body>
