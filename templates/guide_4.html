@@ -5,6 +5,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
@@ -28,7 +29,7 @@
             </nav>
         </div>
         <div class="header">
-            <h2><b>Step 4:</b> Configure Input Dataset</h2>
+            <h2><b>Step 5:</b> Configure Input Dataset</h2>
             <div class="progress">
                 <div class="circle done">
                     <span class="label">1</span>
@@ -44,25 +45,64 @@
                     <span class="label">3</span>
                     <p id="activation" class="title">Activation</p>
                 </div>
+{#                <span class="bar"></span>#}
+{#                <div class="circle">#}
+{#                    <span class="label">4</span>#}
+{#                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>#}
+{#                </div>#}
                 <span class="bar done"></span>
                 <div class="circle active">
                     <span class="label">4</span>
-                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>
+                    <p id="loss" class="title">&nbsp;&nbsp;&nbsp;Loss &nbsp;Function</p>
                 </div>
                 <span class="bar active"></span>
                 <div class="circle">
                     <span class="label">5</span>
                     <p id="optimizer" class="title">Optimizer</p>
                 </div>
-                <span class="bar"></span>
-                <div class="circle">
-                    <span class="label">6</span>
-                    <p id="loss" class="title">&nbsp;&nbsp;&nbsp;Loss &nbsp;Function</p>
-                </div>
             </div>
         </div>
         <div id="content">
-            <div class="introduction">
+            <div class="introduction" id="why-div">
+                <ul>
+                    <li>
+                        <p>
+                            As we mentioned in the previous step of the guide, the learning process of a neural network consists of repeatedly adjusting
+                            the network parameters (weights and biases) in order to minimize the difference between the predicted label (output) of the
+                            network and the actual label from the training dataset. That difference represents the <b>error</b> of the neural network, and
+                            it is computed with the help of a <b>loss function</b>.
+
+                            In other words, the adjusting of the network parameters is done with the intent to <b>minimize the cost function</b>. Therefore, a
+                            loss function's role is to evaluate the network's error.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>Mean Squared Error</h4>
+                        <p>
+                            <b>Mean Squared Error</b> (or <b>MSE</b>) is computed by averaging the squared differences between the predicted labels and the actual
+                            labels. If we had \(n\) training instances and labels \(t\), for which the network predicted \(n\) outputs \(y\), then the formula for the
+                            <b>MSE</b> is:
+                            \[
+                                MSE = \frac{1}{2n} \sum_{i}^{n}(t_i - y_i)^{2}
+                            \]
+                        </p>
+                        <p>
+                            One thing to note about the MSE is that its formula resembles the one for the variance, which computes how far some elemets are
+                            from the mean.
+                        </p>
+                        <p>
+                            The Mean Squared Error is continuous and easily differentiable, which will be very useful in the training process, since the <b>Backpropagation</b>
+                            algorithm uses the gradient of the loss function extensively in the training process:
+                            \[
+                                MSE' = -\frac{1}{n} \sum_{i}^{n}(t_i - y_i)y_i'
+                            \]
+                            where \(y_i'\) is the gradient of the activation function.
+                        </p>
+                    </li>
+                    <li>
+                        <h4>Cross Entropy</h4>
+                    </li>
+                </ul>
             </div>
         </div>
     </body>

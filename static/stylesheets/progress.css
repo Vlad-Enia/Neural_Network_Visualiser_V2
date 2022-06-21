@@ -38,11 +38,11 @@
 }
 .progress .bar {
   position: relative;
-  width: 95px;
+  width: 107px;
   height: 6px;
   top: 17px;
-  margin-left: -155px;
-  margin-right: -155px;
+  margin-left: -190px;
+  margin-right: -190px;
   border-left: none;
   border-right: none;
   border-radius: 0;

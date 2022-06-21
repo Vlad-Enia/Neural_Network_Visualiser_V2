@@ -51,20 +51,20 @@
                     <span class="label">3</span>
                     <p id="activation" class="title">Activation</p>
                 </div>
+{#                <span class="bar"></span>#}
+{#                <div class="circle">#}
+{#                    <span class="label">4</span>#}
+{#                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>#}
+{#                </div>#}
                 <span class="bar active"></span>
                 <div class="circle">
                     <span class="label">4</span>
-                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>
+                    <p id="loss" class="title">&nbsp;&nbsp;&nbsp;Loss &nbsp;Function</p>
                 </div>
                 <span class="bar"></span>
                 <div class="circle">
                     <span class="label">5</span>
                     <p id="optimizer" class="title">Optimizer</p>
-                </div>
-                <span class="bar"></span>
-                <div class="circle">
-                    <span class="label">6</span>
-                    <p id="loss" class="title">&nbsp;&nbsp;&nbsp;Loss &nbsp;Function</p>
                 </div>
             </div>
         </div>
@@ -343,6 +343,34 @@
                                 <p>The <b>Dying ReLU Problem</b> appears because the negative side of the graph of the gradient is \(0\), which causes the weights and biases to become "dead",
                                 since they are  not updated anymore.</p>
                             </li>
+                            <br>
+                            <li>
+                                <h4>Softmax</h4>
+                                <p>
+                                    When we talked about the Sigmoid activation function, we said that, since its output is between the \((0,1)\) range, it is useful
+                                    for when we expect the network to predict probabilities as output. That is only true when the output is a single value (i.e. the
+                                    network has only one neuron on the output layer). But for multi-class classification, where we should have one neuron for each
+                                    class on the output layer, sigmoid is not enough, since it can output values that do not sum up to \(1\).
+                                </p>
+                                <p>
+                                    The <b>Softmax</b> aims to solve that, since its purpose is to output a probability distribution. Therefore, the Softmax activation
+                                    function works best when used in networks designed for multi-class classification and should be applied on the output layer of such
+                                    a network, a layer that has a neuron for each class.
+                                </p>
+                                <p>
+                                    The output of the Softmax function is a probability distribution. Therefore, when applied on the output layer, each neuron will output
+                                    a probability, corresponding to the class that it is associated to. <br>
+                                    For example, assuming that we have to work with three classes. If we feed an instance from the first class to a correctly trained network,
+                                    then the probability output from the first layer should be the highest.
+                                </p>
+                                <p>
+                                    The formula of the Softmax function:
+                                    \[
+                                        softmax(z_i^L) = \frac{e^{z_i^L}}{\sum_{j}^{n} z_j^L}
+                                    \]
+                                    where \(z_i^L\) is the weighted sum of the inputs of a neuron from the output layer.
+                                </p>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -359,6 +387,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -371,6 +400,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -383,6 +413,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -395,6 +426,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -407,6 +439,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -419,6 +452,7 @@
                                             <option value="sigmoid">Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
@@ -431,6 +465,7 @@
                                             <option value="sigmoid" selected>Sigmoid</option>
                                             <option value="tanh">Tanh</option>
                                             <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
                                 </div>
