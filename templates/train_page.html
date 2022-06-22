@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
+        <script src="../static/scripts/indexScript.js"></script>
+        <script src="../static/scripts/drawGraph.js"></script>
+        <script src="../static/scripts/drawPlot.js"></script>
+        <script src="../static/scripts/configureNetworkActivations.js"></script>
+        <script src="../static/scripts/trainScript.js"></script>
+        <script src="../static/scripts/notify.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
+        <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
+        <link rel="stylesheet" href="../static/stylesheets/progress.css">
+        <link rel="stylesheet" href="../static/stylesheets/trainStyle.css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <title>NNViz</title>
+    </head>
+    <body>
+        <div id="navbarDiv">
+            <nav class="navbar navbar-expand-lg" id="navbar">
+                <div class="logo">
+                    <img src="../static/images/NNViz%20Logo%202.png" width="200" alt="" id="logo">
+                </div>
+                <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" id="homeLink" href="/">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="header">
+            <h2><b>Train</b> the Neural Network</h2>
+        </div>
+        <div class="train-div">
+            <div class="configure-train-panel">
+                <div class="configure-train-container">
+                    <p>Training Hyper-parameters</p>
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn-primary btn configure-train-btn">Train</button>
+                        </div>
+                        <div class="col">
+                            <br>
+                            <label for="epochs" class="form-label">Epochs</label>
+                            <input type="number" min="1" max="10000" step="1" id="epochs" name="epochs" value="1000" class="form-control">
+                        </div>
+                        <div class="col">
+                            <br>
+                            <label for="batch-size"  class="form-label">Batch size</label>
+                            <input type="number" min="1" max="50" step="1" id="batch-size" name="batch_size" value="25" class="form-control">
+                        </div>
+                        <div class="col">
+                            <label for="learning-rate"  class="form-label">Learning rate</label>
+                            <input type="number" min="0.001" max="1" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="configure-train-container">
+                    <p>Network Configuration</p>
+                    <div class="configure-train-controls">
+                        <div class="row">
+                            <div class="col">
+                                <a href="/train/change_input"><button class="btn-primary btn configure-train-btn">Change Input</button></a>
+                            </div>
+                            <div class="col">
+                                <a href="train/change_architecture"><button class="btn-primary btn configure-train-btn">Change Architecture</button></a>
+                            </div>
+                            <div class="col">
+                                <label for="loss-function" id="loss-label" class="form-label">Loss Function</label>
+                                <select id="loss-function" class="form-select">
+                                    <option selected value="mean_squared_error">Mean Squared Error</option>
+                                    <option value="categorical_crossentropy">Cross-Entropy</option>
+                                    <option value="binary_crossentropy">Binary Cross-Entropy</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+{#                        <button class="btn-primary btn configure-train-btn">Change Activations</button>#}
+
+
+                    </div>
+                    <button class="btn-primary btn configure-train-btn apply-btn" id="reset-btn">Reset</button>
+                </div>
+            </div>
+            <br>
+            <br>
+            <div class="train-nn-dataset">
+                <div id="graph-and-activations">
+                    <div class="configure-nn-panel">
+                        <form class="configure-activation-form">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-1-activation" id="layer-1-activation-label" class="form-label">\(1^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-1-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-2-activation" id="layer-2-activation-label" class="form-label">\(2^{nd}\) hidden layer activation</label>
+                                        <select hidden id="layer-2-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-3-activation" id="layer-3-activation-label" class="form-label">\(3^{rd}\) hidden layer activation</label>
+                                        <select hidden id="layer-3-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-4-activation" id="layer-4-activation-label" class="form-label">\(4^{th}\) hidden layer activation</label>
+                                        <select hidden id="layer-4-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-5-activation" id="layer-5-activation-label" class="form-label">\(5^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-5-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-6-activation" id="layer-6-activation-label" class="form-label">\(6^{st}\) hidden layer activation</label>
+                                        <select hidden id="layer-6-activation" class="form-select">
+                                            <option value="relu" selected>ReLU</option>
+                                            <option value="sigmoid">Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-group">
+                                        <label hidden for="layer-out-activation" id="layer-out-activation-label" class="form-label">Output layer activation</label>
+                                        <select hidden id="layer-out-activation" class="form-select">
+                                            <option value="relu" >ReLU</option>
+                                            <option value="sigmoid" selected>Sigmoid</option>
+                                            <option value="tanh">Tanh</option>
+                                            <option value="linear">Linear</option>
+                                            <option value="softmax">Softmax</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <button hidden id="confirm-network-activations" class="btn-primary btn">Confirm</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <br>
+                    <div id="nn-graph-train-div" class="nn-graph-div"></div>
+                </div>
+
+                <div id="configure-dataset-plot-train-div" class="configure-dataset-plot"></div>
+            </div>
+        </div>
+    </body>
+</html>

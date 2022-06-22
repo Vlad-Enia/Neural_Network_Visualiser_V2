@@ -9,7 +9,6 @@
         <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
         <script src="../static/scripts/drawPlot.js"></script>
         <script src="../static/scripts/guide1Script.js"></script>
-        <script src="../static/scripts/notify.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
@@ -33,99 +32,12 @@
             </nav>
         </div>
         <div class="header">
-            <h2><b>Step 1:</b> Configure input dataset</h2>
-            <div class="progress">
-                <div class="circle active">
-                    <a href="/guide/1"><span class="label">1</span></a>
-                    <p id="input" class="title">Input</p>
-                </div>
-                <span class="bar active"></span>
-                <div class="circle">
-                    <a href="/guide/2"><span class="label">2</span></a>
-                    <p id="architecture" class="title">Architecture</p>
-                </div>
-                <span class="bar"></span>
-                <div class="circle">
-                    <a href="/guide/3"><span class="label">3</span></a>
-                    <p id="activation" class="title">Activation</p>
-                </div>
-{#                <span class="bar"></span>#}
-{#                <div class="circle">#}
-{#                    <span class="label">4</span>#}
-{#                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>#}
-{#                </div>#}
-                <span class="bar"></span>
-                <div class="circle">
-                    <a href="/guide/4"><span class="label">4</span></a>
-                    <p id="loss" class="title">&nbsp;&nbsp;&nbsp;Loss &nbsp;Function</p>
-                </div>
-                <span class="bar"></span>
-                <div class="circle">
-                    <a href="/guide/5"><span class="label">5</span></a>
-                    <p id="optimizer" class="title">Optimizer</p>
-                </div>
-            </div>
-            <h2>
-                <a href="/guide"><button class="btn-primary btn">Previous Step</button></a>
-                <a href="/guide/2"><button class="btn-primary btn">Next Step</button></a>
-            </h2>
-        </div>
-        <div id="content">
-            <div id="why-div" class="introduction">
-                <ul>
-                    <li>
-                        <p>
-                            <b>Neural networks</b> are usually used for <b>classification</b> problems, in which we input data and the network outputs an outcome;
-                            Usually, those outcomes are labels that could be applied to instances of the data. For example, an email filter may use neural network to
-                            detect spam. Therefore, those outcome labels can be spam or not_spam.
-                        </p>
+            <h2>Change Input Dataset</h2>
 
-                    </li>
-                    <li>
-                        <p>
-                            In order for a network to become capable of correctly classifying instances (i.e. give correct outcomes, or labels), it first needs to be trained on
-                            a labeled dataset, which are usually called <b>training datasets</b> and consist of a set of instances and a list of labels, one for each instance.
-                        </p>
-                    </li>
-                    <li>
-                        <p>
-                            The <b>training process</b>, is as follows:
-                        </p>
-                         <ul>
-                            <li>
-                                At each iteration, take an instance and its label from the training dataset;
-                            </li>
-                             <li>
-                                 Feed the instance to the network and obtain a prediction (i.e. a predicted label for that instance);
-                             </li>
-                             <li>
-                                 Based on how wrong that prediction is (i.e. how big the difference is between the predicted label, and the actual label from the training dataset), the parameters of the network are adjusted;
-                             </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <p>
-                            For the didactic purpose of this app, we are only going to work with <b>two-dimensional dataset</b>. Why? Because the input, as well as the output of a neural network, are easier to visualise.
-                            For such datasets, the output of any classifier can be visualised with the help of <b>decision surfaces:</b>
-                        </p>
-                        <div class="columns-div">
-                            <figure class="plot-div">
-                                <div id="plot-div-moons_dataset" ></div>
-                                <figcaption>
-                                    An example of a two-dimensional dataset.
-                                </figcaption>
-                            </figure>
-                            <figure class="plot-div">
-                                <div id="plot-div-moons_dataset_classified" ></div>
-                                <figcaption>
-                                    The same two-dimensional dataset, but classified using a neural network.
-                                </figcaption>
-                            </figure>
-                        </div>
-                    </li>
-                </ul>
-                <br>
-            </div>
+        </div>
+        <br>
+        <br>
+        <div id="content">
             <div class="configure-dataset">
                 <div class="configure-dataset-panel">
                     <div class="container">
@@ -215,7 +127,7 @@
                 </div>
             </div>
             <div class="confirm-div">
-                <a hidden id="confirm-dataset" href=""><button class="btn btn-primary">Confirm dataset configuration</button></a>
+                <a hidden id="confirm-dataset-change" href=""><button class="btn btn-primary">Confirm dataset configuration</button></a>
             </div>
         </div>
     </body>

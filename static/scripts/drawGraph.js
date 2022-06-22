@@ -209,6 +209,31 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
     new vis.Network(container[0], data, options)
 }
 
+function retrieve_network_architecture(){
+    let result;
+    $.ajax({
+        method: 'GET',
+        async: false,
+        url: '/retrieve_network_architecture',
+        success: function(response){
+            result = response
+            console.log(response)
+        }
+    })
+    return result
+}
+
+function drawGraph(network_architecture, containerId){
+    let nrHiddenLayers = network_architecture.nr_hidden_layers
+    let LayerSizeList = network_architecture.hidden_layer_size_list
+    let outputLayerSize = network_architecture.output_layer_size
+
+    let nrLayers = nrHiddenLayers+=2
+    LayerSizeList.unshift(2)
+    LayerSizeList.push(outputLayerSize)
+    drawCustomGraph(nrLayers, LayerSizeList, containerId)
+}
+
 function drawPerceptron(inputs, inputSize, weights){
     let nodeList = []
     let edgeList = []

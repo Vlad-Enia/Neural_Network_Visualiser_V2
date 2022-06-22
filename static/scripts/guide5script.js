@@ -10,10 +10,23 @@ function addFormBehaviour(){
             async: false,
             data: formData,
             success: function(){
-                console.log('success')
+                window.location.href='/train'
+                // $.notify(
+                //     'Hyper-parameters successfully set',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'success'
+                //     }
+                // )
             },
             error: function(){
-                console.log('error')
+                // $.notify(
+                //     'Error at configuring hyper-parameters',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'error'
+                //     }
+                // )
             }
         })
     })

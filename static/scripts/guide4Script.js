@@ -1,8 +1,7 @@
-function addFormBehaviour(){
-    $('#confirm-network-loss').click(function(event){
-        event.preventDefault()
-        console.log('ceva')
 
+
+function addFormBehaviour(){
+    $('#confirm-network-loss').click(function(){
         let lossFunction = $('#loss-function').val()
         $.ajax({
             method: 'POST',
@@ -13,9 +12,23 @@ function addFormBehaviour(){
             },
             success: function() {
                 window.location.href = '/guide/5'
+                // $.notify(
+                //     'Loss function successfully set',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'success'
+                //     }
+                // )
             },
             error: function(){
                 window.location.href = '/guide/5'
+                // $.notify(
+                //     'Error at configuring loss function',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'error'
+                //     }
+                // )
             }
         })
     })

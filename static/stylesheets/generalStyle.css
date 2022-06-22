@@ -33,7 +33,7 @@ body{
 #content{
     display: flex;
     flex-direction: column;
-    padding: 60px 10% 10%;
+    padding: 10px 10% 10%;
     width: 100%;
 }
 
@@ -112,6 +112,7 @@ figcaption {
     margin-left: auto;
     margin-right: auto;
     display: block;
+    display: block;
 }
 
 form{
@@ -160,6 +161,7 @@ h2{
 
 .btn-primary{
     margin-top: 20px;
+    font-size: 14px;
 }
 
 .btn-primary, .btn-primary:visited {
@@ -188,3 +190,4 @@ h2{
     box-shadow: none;
     border: none;
 }
+

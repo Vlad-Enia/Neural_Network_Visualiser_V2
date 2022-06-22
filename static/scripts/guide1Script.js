@@ -15,6 +15,7 @@ function addDatasetLinkHandler(){
                 $('.configure-dataset-plot').html(response.fig)
                 configureForm(imgName, response.params)
                 $('.confirm-div #confirm-dataset').removeAttr('hidden')
+                $('.confirm-div #confirm-dataset-change').removeAttr('hidden')
             }
         })
 
@@ -53,6 +54,7 @@ function addFormBehaviour(){
             success: function(response){
                 $('.configure-dataset-plot').html(response.fig)
                 configureForm(datasetName, response.params)
+
             }
         })
     })
@@ -68,10 +70,56 @@ function addConfirmDatasetHandler(){
             dataType: 'json',
             data: formData,
             success: function(){
+                // $.notify(
+                //     'Input dataset successfully configured',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'success'
+                //     }
+                // )
                 window.location.href = '/guide/2'
             },
             error: function(){
+
+                // $.notify(
+                //     'Error at configuring input dataset',
+                //     {
+                //         position: 'bottom right',
+                //         className: 'error'
+                //     }
+                // )
                 window.location.href = '/guide/2'
+            }
+        })
+    })
+
+    $('.confirm-div #confirm-dataset-change').click(function(event){
+        event.preventDefault()
+        let formData = $('#dataset-form').serialize()
+        $.ajax({
+            type: 'POST',
+            url: '/confirm_dataset',
+            dataType: 'json',
+            data: formData,
+            success: function(){
+                $.notify(
+                    'Input dataset successfully configured',
+                    {
+                        position: 'bottom right',
+                        className: 'success'
+                    }
+                )
+                window.location.href = '/train'
+            },
+            error: function(){
+                $.notify(
+                    'Error at configuring input dataset',
+                    {
+                        position: 'bottom right',
+                        className: 'error'
+                    }
+                )
+                window.location.href = '/train'
             }
         })
     })

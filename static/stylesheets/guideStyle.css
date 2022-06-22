@@ -158,5 +158,17 @@ figcaption{
 }
 
 
+.introduction{
+    margin-top: 50px;
+}
+
+
+label{
+    font-size: 14px;
+}
+
+option{
+    font-size: 14px;
+}
 
 

@@ -7,6 +7,7 @@ import drawPlot
 import pickle
 import numpy as np
 from markupsafe import escape
+import os.path
 
 app = Flask(__name__)
 
@@ -59,6 +60,12 @@ def save_object(object, path):
         pickle.dump(object, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 
+def load_object(path):
+    with open(path, 'rb+') as f:
+        object = pickle.load(f)
+    return object
+
+
 def save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_dict):
     save_object(dataset_train, './static/config/dataset_train.bin')
     save_object(dataset_test, './static/config/dataset_test.bin')
@@ -67,11 +74,29 @@ def save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_d
     save_object(param_dict, './static/config/input_dataset_params.bin')
 
 
+@app.route('/retrieve_dataset')
+def retrieve_dataset():
+    dataset_train = load_object('./static/config/dataset_train.bin')
+    dataset_test = load_object('./static/config/dataset_test.bin')
+    labels_train = load_object('./static/config/labels_train.bin')
+    labels_test = load_object('./static/config/labels_test.bin')
+    # param_dict = load_object('./static/config/input_dataset_params.bin')
+    # print(param_dict)
+    return drawPlot.draw_dataset(dataset_train, dataset_test, labels_train, labels_test)
+
+
 @app.route('/confirm_dataset', methods=['POST'])
 def confirm_dataset():
     dataset_name = request.form['dataset_name']
     fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_custom_plot(dataset_name, request.form)
     save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_dict)
+    if os.path.exists('./static/config/network_architecture.bin'):
+        network_architecture = load_object('./static/config/network_architecture.bin')
+        if param_dict['n_colors'] == 2:
+            network_architecture['output_layer_size'] = 1
+        else:
+            network_architecture['output_layer_size'] = param_dict['n_colors']
+        save_object(network_architecture, './static/config/network_architecture.bin')
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
@@ -107,6 +132,8 @@ def confirm_network_activations():
         network_architecture = pickle.load(f)
     network_architecture['hidden_layer_activation_list'] = request.form.getlist('hidden_layer_activation_list[]')
     network_architecture['output_layer_activation'] = request.form['output_layer_activation']
+    print(network_architecture['hidden_layer_activation_list'])
+    print(network_architecture['output_layer_activation'])
     save_object(network_architecture, './static/config/network_architecture.bin')
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
@@ -127,9 +154,23 @@ def confirm_optimizer():
     network_architecture['learning_rate'] = request.form['learning_rate']
     network_architecture['batch_size'] = request.form['batch_size']
     network_architecture['epochs'] = request.form['epochs']
-    print(network_architecture)
+    save_object(network_architecture, './static/config/network_architecture.bin')
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
+
+@app.route('/train', methods=['GET'])
+def load_train_page():
+    return flask.render_template('train_page.html')
+
+
+@app.route('/train/change_input')
+def load_change_input_page():
+    return flask.render_template('change_input.html')
+
+
+@app.route('/train/change_architecture')
+def change_architecture():
+    return flask.render_template('change_architecture.html')
 
 if __name__ == '__main__':
     app.run()

@@ -8,9 +8,11 @@
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
         <script src="../static/scripts/guide4Script.js"></script>
+        <script src="../static/scripts/notify.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
+        <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
         <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
         <title>NNViz</title>
     </head>
@@ -158,15 +160,13 @@
                                     <option value="binary_crossentropy">Binary Cross-Entropy</option>
                                 </select>
                             </div>
+                            <div class="col">
+                                <button id="confirm-network-loss" class="btn btn-primary">Confirm network loss function</button>
+                            </div>
                         </div>
-
                     </div>
+
                 </form>
-                <div>
-                    <a href="" id="confirm-network-loss">
-                        <button class="btn btn-primary">Confirm network loss function</button>
-                    </a>
-                </div>
             </div>
         </div>
     </body>

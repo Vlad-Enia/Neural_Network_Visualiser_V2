@@ -102,7 +102,7 @@ def create_moons_dataset(n_samples_per_cluster=500, noise=0.1, test_size=0.1):
             'height': 500,
         }
     )
-    return fig, dataset_train, dataset_test, labels_train, labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'test_size': test_size}
+    return fig, dataset_train, labels_train, dataset_test,  labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'test_size': test_size}
 
 
 def create_circles_dataset(n_samples_per_cluster=500, noise=0.05, factor=0.2, test_size=0.1):
@@ -115,7 +115,7 @@ def create_circles_dataset(n_samples_per_cluster=500, noise=0.05, factor=0.2, te
             'height': 500,
         }
     )
-    return fig, dataset_train, dataset_test, labels_train, labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'factor': factor, 'test_size': test_size}
+    return fig, dataset_train, labels_train, dataset_test,  labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'factor': factor, 'test_size': test_size}
 
 
 def draw_plot(plot_name):
@@ -164,3 +164,14 @@ def draw_custom_plot(plot_name, param_dict):
         fig, dataset_train, dataset_test, labels_train, labels_test, res_param_dict = create_circles_dataset(n_samples_per_cluster=int(param_dict['n_samples']), noise=float(param_dict['noise']), factor=float(param_dict['factor']), test_size=float(param_dict['test_size']))
         res_param_dict['n_colors'] = 2
     return fig, dataset_train, dataset_test, labels_train, labels_test, res_param_dict
+
+
+def draw_dataset(dataset_train, dataset_test, labels_train, labels_test):
+    scatter_train = return_dataset_scatters(dataset_train, True, labels_train, 10)
+    scatter_test = return_dataset_scatters(dataset_test, False, labels_test, 10)
+    fig = go.Figure(
+        data=scatter_train + scatter_test,
+    )
+    fig_html = fig.to_html(full_html=False, default_width='100%', default_height='100%')
+    return fig_html
+
