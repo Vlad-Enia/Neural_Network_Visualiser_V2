@@ -83,7 +83,10 @@ def create_blobs_dataset(n_clusters=2, n_colors=2, n_samples_per_cluster=500, no
     train_scatter, test_scatter = plot_dataset(dataset_train, dataset_test, labels_train, labels_test)
 
     fig = go.Figure(
-        data=train_scatter + test_scatter
+        data=train_scatter + test_scatter,
+        layout={
+            'height': 500,
+        }
     )
 
     return fig, dataset_train, labels_train, dataset_test, labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'distance': distance_between_clusters, 'test_size': test_size}
@@ -94,7 +97,10 @@ def create_moons_dataset(n_samples_per_cluster=500, noise=0.1, test_size=0.1):
     dataset_train, dataset_test, labels_train, labels_test = train_test_split(dataset, labels, test_size = test_size)
     train_scatter, test_scatter = plot_dataset(dataset_train, dataset_test, labels_train, labels_test)
     fig = go.Figure(
-        data=train_scatter + test_scatter
+        data=train_scatter + test_scatter,
+        layout={
+            'height': 500,
+        }
     )
     return fig, dataset_train, dataset_test, labels_train, labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'test_size': test_size}
 
@@ -104,7 +110,10 @@ def create_circles_dataset(n_samples_per_cluster=500, noise=0.05, factor=0.2, te
     dataset_train, dataset_test, labels_train, labels_test = train_test_split(dataset, labels, test_size = test_size)
     train_scatter, test_scatter = plot_dataset(dataset_train, dataset_test, labels_train, labels_test)
     fig = go.Figure(
-        data=train_scatter + test_scatter
+        data=train_scatter + test_scatter,
+        layout={
+            'height': 500,
+        }
     )
     return fig, dataset_train, dataset_test, labels_train, labels_test, {'n_samples': n_samples_per_cluster, 'noise': noise, 'factor': factor, 'test_size': test_size}
 

@@ -12,7 +12,7 @@
 .plot-div{
     width: 50%;
     height: auto;
-    background-color: whitesmoke;
+    background-color: white;
     border: 1px solid lightgray;
     border-radius: 5px;
     box-shadow: #444444;
@@ -85,6 +85,7 @@ figcaption{
 
 .configure-dataset-plot{
     width: 60%;
+    /*padding: 0 50px;*/
 }
 
 .container img{

@@ -33,7 +33,7 @@ body{
 #content{
     display: flex;
     flex-direction: column;
-    padding: 20px 100px 100px;
+    padding: 60px 10% 10%;
     width: 100%;
 }
 
@@ -76,7 +76,7 @@ body{
 }
 
 p{
-    font-size: 20px;
+    font-size: 18px;
     font-weight: lighter;
 }
 
