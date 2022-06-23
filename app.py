@@ -1,5 +1,4 @@
 import json
-
 import flask
 from flask import Flask
 from flask import request
@@ -8,6 +7,7 @@ import pickle
 import numpy as np
 from markupsafe import escape
 import os.path
+import nn
 
 app = Flask(__name__)
 
@@ -109,11 +109,17 @@ def retrieve_dataset_params():
 
 @app.route('/confirm_network_architecture', methods=['POST'])
 def confirm_network_architecture():
-    network_architecture = {
-        'nr_hidden_layers': int(request.form['nr_hidden_layers']),
-        'hidden_layer_size_list': np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist(),
-        'output_layer_size': int(request.form['output_layer_size'])
-    }
+    if os.path.exists('./static/config/network_architecture.bin'):
+        network_architecture = retrieve_network_architecture()
+        network_architecture['nr_hidden_layers'] = int(request.form['nr_hidden_layers'])
+        network_architecture['hidden_layer_size_list'] = np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist()
+        network_architecture['output_layer_size'] = int(request.form['output_layer_size'])
+    else:
+        network_architecture = {
+            'nr_hidden_layers': int(request.form['nr_hidden_layers']),
+            'hidden_layer_size_list': np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist(),
+            'output_layer_size': int(request.form['output_layer_size'])
+        }
     print(network_architecture)
     save_object(network_architecture, './static/config/network_architecture.bin')
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
@@ -158,6 +164,17 @@ def confirm_optimizer():
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 
+@app.route('/confirm_loss_and_lr', methods=['POST'])
+def confirm_loss_and_lr():
+    with open('./static/config/network_architecture.bin', 'rb+') as f:
+        network_architecture = pickle.load(f)
+    network_architecture['learning_rate'] = request.form['learning_rate']
+    network_architecture['loss_function'] = request.form['loss_function']
+    print(network_architecture)
+    save_object(network_architecture, './static/config/network_architecture.bin')
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
 @app.route('/train', methods=['GET'])
 def load_train_page():
     return flask.render_template('train_page.html')
@@ -171,6 +188,67 @@ def load_change_input_page():
 @app.route('/train/change_architecture')
 def change_architecture():
     return flask.render_template('change_architecture.html')
+
+
+@app.route('/train/create_nn', methods=['POST'])
+def create_nn():
+    network_architecture = retrieve_network_architecture()
+    n_hidden_layers = network_architecture['nr_hidden_layers']
+    hidden_layer_size_list = network_architecture['hidden_layer_size_list']
+    hidden_layer_activation_list = network_architecture['hidden_layer_activation_list']
+    output_layer_size = network_architecture['output_layer_size']
+    output_layer_activation = network_architecture['output_layer_activation']
+    loss_function = network_architecture['loss_function']
+    learning_rate = float(network_architecture['learning_rate'])
+    model = nn.create_nn(n_hidden_layers, hidden_layer_size_list, output_layer_size, hidden_layer_activation_list, output_layer_activation, learning_rate, loss_function)
+    nn.save_model(model, './static/config/model')
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+
+@app.route('/train/train_nn', methods=['POST'])
+def train_nn():
+    model = nn.load_model('./static/config/model')
+    epochs = int(request.form['epochs'])
+    batch_size = int(request.form['batch_size'])
+    dataset_train = load_object('./static/config/dataset_train.bin')
+    dataset_test = load_object('./static/config/dataset_test.bin')
+    labels_train = load_object('./static/config/labels_train.bin')
+    labels_test = load_object('./static/config/labels_test.bin')
+    dataset_params = load_object('./static/config/input_dataset_params.bin')
+    n_labels = dataset_params['n_colors']
+    history = nn.train_nn(model, dataset_train, labels_train, dataset_test, labels_test, n_labels, epochs, batch_size)
+    model.save('./static/config/model')
+    save_object(history.history, './static/config/history.bin')
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
+
+
+@app.route('/train/get_loss')
+def get_loss_plot():
+    history = load_object('./static/config/history.bin')
+    return drawPlot.plot_loss(history, 'loss')
+
+
+@app.route('/train/get_val_loss')
+def get_val_loss():
+    history = load_object('./static/config/history.bin')
+    return drawPlot.plot_loss(history, 'val_loss')
+
+
+@app.route('/train/get_decision_surface')
+def get_decision_surface():
+    dataset_train = load_object('./static/config/dataset_train.bin')
+    labels_train = load_object('./static/config/labels_train.bin')
+    model = nn.load_model('./static/config/model')
+    dataset_params = load_object('./static/config/input_dataset_params.bin')
+    n_labels = int(dataset_params['n_colors'])
+    if n_labels > 2:
+        one_hot_labels = nn.convert_to_one_hot(labels_train)
+        fig = drawPlot.plot_decision_boundary(dataset_train, one_hot_labels, dataset_params['n_colors'], model, steps=300)
+    else:
+        fig = drawPlot.plot_decision_boundary(dataset_train, labels_train, dataset_params['n_colors'], model,
+                                              steps=300)
+    return fig
+
 
 if __name__ == '__main__':
     app.run()

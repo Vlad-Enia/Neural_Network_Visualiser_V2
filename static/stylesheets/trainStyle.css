@@ -74,4 +74,16 @@
     text-align: center;
 }
 
+.history-plots{
+    width: 100%;
+    display: flex;
+    gap: 20px;
+}
+
+#train-loss-plot, #test-loss-plot{
+    width: 50%;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+}
+
 

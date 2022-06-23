@@ -102,23 +102,9 @@ function addConfirmDatasetHandler(){
             dataType: 'json',
             data: formData,
             success: function(){
-                $.notify(
-                    'Input dataset successfully configured',
-                    {
-                        position: 'bottom right',
-                        className: 'success'
-                    }
-                )
                 window.location.href = '/train'
             },
             error: function(){
-                $.notify(
-                    'Error at configuring input dataset',
-                    {
-                        position: 'bottom right',
-                        className: 'error'
-                    }
-                )
                 window.location.href = '/train'
             }
         })

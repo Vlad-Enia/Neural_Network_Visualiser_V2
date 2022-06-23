@@ -46,7 +46,7 @@
                     <p>Training Hyper-parameters</p>
                     <div class="row">
                         <div class="col">
-                            <button class="btn-primary btn configure-train-btn">Train</button>
+                            <button disabled id="train-btn" class="btn-primary btn">Train</button>
                         </div>
                         <div class="col">
                             <br>
@@ -58,10 +58,7 @@
                             <label for="batch-size"  class="form-label">Batch size</label>
                             <input type="number" min="1" max="50" step="1" id="batch-size" name="batch_size" value="25" class="form-control">
                         </div>
-                        <div class="col">
-                            <label for="learning-rate"  class="form-label">Learning rate</label>
-                            <input type="number" min="0.001" max="1" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
-                        </div>
+
                     </div>
                 </div>
                 <div class="configure-train-container">
@@ -82,17 +79,15 @@
                                     <option value="binary_crossentropy">Binary Cross-Entropy</option>
                                 </select>
                             </div>
+                            <div class="col">
+                                <label for="learning-rate"  class="form-label">Learning rate</label>
+                                <input type="number" min="0.001" max="1" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
+                            </div>
                         </div>
-
-
-{#                        <button class="btn-primary btn configure-train-btn">Change Activations</button>#}
-
-
                     </div>
                     <button class="btn-primary btn configure-train-btn apply-btn" id="reset-btn">Reset</button>
                 </div>
             </div>
-            <br>
             <br>
             <div class="train-nn-dataset">
                 <div id="graph-and-activations">
@@ -194,6 +189,12 @@
                 </div>
 
                 <div id="configure-dataset-plot-train-div" class="configure-dataset-plot"></div>
+            </div>
+            <br>
+            <br>
+            <div class="history-plots">
+                <div id="train-loss-plot"></div>
+                <div id="test-loss-plot"></div>
             </div>
         </div>
     </body>
