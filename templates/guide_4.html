@@ -54,11 +54,6 @@
                     <a href="/guide/3"><span class="label">3</span></a>
                     <p id="activation" class="title">Activation</p>
                 </div>
-{#                <span class="bar"></span>#}
-{#                <div class="circle">#}
-{#                    <span class="label">4</span>#}
-{#                    <p id="regularizer" class="title">&nbsp;&nbsp;Initialization &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and  Regularization</p>#}
-{#                </div>#}
                 <span class="bar done"></span>
                 <div class="circle active">
                     <a href="/guide/4"><span class="label">4</span></a>
@@ -135,19 +130,6 @@
                         </p>
                     </li>
                     <br>
-                    <li>
-                        <h4>Binary Cross-Entropy</h4>
-                        <p>
-                            The <b>Binary Cross-Entropy</b> loss function is a particular version of the Cross-Entropy, used in binary classification problems.
-                        </p>
-                        <p>
-                            Formula, for \(n\) training instances:
-                            \[
-                                L_{BCE} = - \frac{1}{n} \sum_i^n(t_i \log(y_i) + (1 - t_i) \log(1-y_i))
-                            \]
-                        </p>
-                        <p> As a result, this loss function is best suited for <b>binary classification problems</b> and is best used together with the <b>Sigmoid</b> activation on the output layer</p>
-                    </li>
                 </ul>
                 <p>
                     Having all of these in mind, you may choose a loss function for your configured network. You can also go back to the <a href="/guide/3">previous step</a> and change activation function on different layers.
@@ -163,7 +145,6 @@
                                 <select id="loss-function" class="form-select">
                                     <option selected value="mean_squared_error">Mean Squared Error</option>
                                     <option value="categorical_crossentropy">Cross-Entropy</option>
-                                    <option value="binary_crossentropy">Binary Cross-Entropy</option>
                                 </select>
                             </div>
                             <div class="col">

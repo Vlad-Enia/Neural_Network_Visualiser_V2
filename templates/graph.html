@@ -16,15 +16,10 @@
 
     <body>
         <div id = "mynetwork"></div>
-
-
         <script type="text/javascript">
-
             function sleep(ms){
                 return new Promise(resolve => setTimeout(resolve, ms))
             }
-
-
             var nodes = new vis.DataSet([
                 {"color": "lightblue", "fixedsize": true, "id": "0_0", "label": "0_0", "level": 0, "shape": "circle", "size": 10, "width": 0.6},
                 {"color": "lightgreen", "fixedsize": true, "id": "1_0", "label": "1_0", "level": 1, "shape": "circle", "size": 10, "width": 0.6},
@@ -113,10 +108,7 @@
                     edges.update(edge)
                 }
             }
-
             animate()
-
-
         </script>
     </body>
 </html>

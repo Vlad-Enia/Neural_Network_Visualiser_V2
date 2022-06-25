@@ -49,7 +49,7 @@
         <div class="train-div">
             <div class="configure-train-panel">
                 <div class="configure-train-container">
-                    <p>Training Hyper-parameters</p>
+                    <p>Training Controls</p>
                     <div class="row">
                         <div class="col">
                             <button disabled id="train-btn" class="btn-primary btn">Train</button>
@@ -82,7 +82,6 @@
                                 <select id="loss-function" class="form-select">
                                     <option selected value="mean_squared_error">Mean Squared Error</option>
                                     <option value="categorical_crossentropy">Cross-Entropy</option>
-                                    <option value="binary_crossentropy">Binary Cross-Entropy</option>
                                 </select>
                             </div>
                             <div class="col">
@@ -176,10 +175,7 @@
                                     <div class="form-group">
                                         <label hidden for="layer-out-activation" id="layer-out-activation-label" class="form-label">Output layer activation</label>
                                         <select hidden id="layer-out-activation" class="form-select">
-                                            <option value="relu" >ReLU</option>
                                             <option value="sigmoid" selected>Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
                                             <option value="softmax">Softmax</option>
                                         </select>
                                     </div>
@@ -196,8 +192,7 @@
 
                 <div id="configure-dataset-plot-train-div" class="configure-dataset-plot"></div>
             </div>
-            <br>
-            <br>
+
             <div class="history-plots">
                 <div id="train-loss-plot"></div>
                 <div id="test-loss-plot"></div>

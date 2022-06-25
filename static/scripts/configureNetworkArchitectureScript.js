@@ -73,7 +73,6 @@ function addConfirmBehaviour(outputLayerSize, href) {
         $.ajax({
             type: 'POST',
             url: '/confirm_network_architecture',
-            // dataType: 'json',
             data: {
                 'nr_hidden_layers': nrHiddenLayers,
                 'hidden_layer_size_list': hiddenLayerSizeList,
@@ -81,23 +80,9 @@ function addConfirmBehaviour(outputLayerSize, href) {
             },
             success: function(response){
                 window.location.href = href
-                // $.notify(
-                //     'Network architecture successfully set',
-                //     {
-                //         position: 'bottom right',
-                //         className: 'success'
-                //     }
-                // )
             },
             error: function(response){
                 window.location.href = href
-                // $.notify(
-                //     'Error at setting Network architecture',
-                //     {
-                //         position: 'bottom right',
-                //         className: 'error'
-                //     }
-                // )
             }
         })
     })

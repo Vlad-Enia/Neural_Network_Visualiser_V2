@@ -54,7 +54,6 @@ function addFormBehaviour(){
             success: function(response){
                 $('.configure-dataset-plot').html(response.fig)
                 configureForm(datasetName, response.params)
-
             }
         })
     })
@@ -70,24 +69,9 @@ function addConfirmDatasetHandler(){
             dataType: 'json',
             data: formData,
             success: function(){
-                // $.notify(
-                //     'Input dataset successfully configured',
-                //     {
-                //         position: 'bottom right',
-                //         className: 'success'
-                //     }
-                // )
                 window.location.href = '/guide/2'
             },
             error: function(){
-
-                // $.notify(
-                //     'Error at configuring input dataset',
-                //     {
-                //         position: 'bottom right',
-                //         className: 'error'
-                //     }
-                // )
                 window.location.href = '/guide/2'
             }
         })

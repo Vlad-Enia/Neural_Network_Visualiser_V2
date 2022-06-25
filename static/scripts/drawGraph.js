@@ -69,72 +69,12 @@ let options = {
     }
 
 
+//  This method takes as parameters the total number of the layers , a list containing the size of each layer and a container ID,
+// and creates a Vis.js representation of it
 function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
-    // var nodeList = [
-    //     {"id: "0_0", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
-    //     {"id: "0_1", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
-    //     {"id: "0_2", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
-    //     {"id: "0_3", "level: 0, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
-    //
-    //     {"id: "1_0", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //     {"id: "1_1", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //     {"id: "1_2", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //     {"id: "1_3", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //     {"id: "1_4", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //     {"id: "1_5", "level: 1, "color: {"border:NODE_BORDER_COLOR, 'background':HIDDEN_LAYER_COLOR}},
-    //
-    //     {"id: "2_0", "level: 2, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}},
-    //     {"id: "2_1", "level: 2, "color: {"border:NODE_BORDER_COLOR, 'background':INPUT_OUTPUT_LAYER_COLOR}}
-    // ]
-    // var edges = new vis.DataSet([
-    //     {"from: "0_0", "to: "1_0"},
-    //     {"from: "0_0", "to: "1_1"},
-    //     {"from: "0_0", "to: "1_2"},
-    //     {"from: "0_0", "to: "1_3"},
-    //     {"from: "0_0", "to: "1_4"},
-    //     {"from: "0_0", "to: "1_5"},
-    //
-    //     {"from: "0_1", "to: "1_0"},
-    //     {"from: "0_1", "to: "1_1"},
-    //     {"from: "0_1", "to: "1_2"},
-    //     {"from: "0_1", "to: "1_3"},
-    //     {"from: "0_1", "to: "1_4"},
-    //     {"from: "0_1", "to: "1_5"},
-    //
-    //     {"from: "0_2", "to: "1_0"},
-    //     {"from: "0_2", "to: "1_1"},
-    //     {"from: "0_2", "to: "1_2"},
-    //     {"from: "0_2", "to: "1_3"},
-    //     {"from: "0_2", "to: "1_4"},
-    //     {"from: "0_2", "to: "1_5"},
-    //
-    //     {"from: "0_3", "to: "1_0"},
-    //     {"from: "0_3", "to: "1_1"},
-    //     {"from: "0_3", "to: "1_2"},
-    //     {"from: "0_3", "to: "1_3"},
-    //     {"from: "0_3", "to: "1_4"},
-    //     {"from: "0_3", "to: "1_5"},
-    //
-    //     {"from: "1_0", "to: "2_0"},
-    //     {"from: "1_0", "to: "2_1"},
-    //
-    //     {"from: "1_1", "to: "2_0"},
-    //     {"from: "1_1", "to: "2_1"},
-    //
-    //     {"from: "1_2", "to: "2_0"},
-    //     {"from: "1_2", "to: "2_1"},
-    //
-    //     {"from: "1_3", "to: "2_1"},
-    //     {"from: "1_3", "to: "2_0"},
-    //
-    //     {"from: "1_4", "to: "2_1"},
-    //     {"from: "1_4", "to: "2_0"},
-    //
-    //     {"from: "1_5", "to: "2_0"},
-    //     {"from: "1_5", "to: "2_1"},
-    // ]);
+
+    // Create the nodeList[] array, for each node generating a unique id of the form 'layer-index_node-index'
     let nodeList = []
-    console.log(layerSizeList)
     for (let layer = 0; layer < numberOfLayers; layer++){
         for (let nodeIndex = 0; nodeIndex < layerSizeList[layer]; nodeIndex++){
             let nodeId = `${layer}_${nodeIndex}`
@@ -148,11 +88,13 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
         }
     }
 
+    // Using the unique node ids generated above, e crate the edges
+    // At each for iteration, we create an array containing the nodes on the current level, and another array containing the nodes on the next level
+    // We then use these arrays correctly connect the node between the layers
     let edgeList = []
     for (let layer = 0; layer < numberOfLayers-1; layer++){
         let fromLayerNodeList = nodeList.filter(element => element.level === layer)
         let toLayerNodeList = nodeList.filter(element => element.level === layer+1)
-
         fromLayerNodeList.forEach(function(fromNode){
             toLayerNodeList.forEach(function(toNode){
                 let edgeId = `${fromNode.id}-${toNode.id}`
@@ -166,40 +108,16 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
     let edges = new vis.DataSet(edgeList)
 
     let data = {nodes: nodes, edges: edges};
-
-
     let container = $(containerID)
 
+    // Here we modify the height of the container based on the maximum number of neurons on a layer
     let maximumNumberOfNeuronsOnALayer = Math.max.apply(null, layerSizeList)
     let containerHeight = MIN_CONTAINER_HEIGHT_PER_NODE * maximumNumberOfNeuronsOnALayer;
     container.css('height',containerHeight)
 
-    // if(maximumNumberOfNeuronsOnALayer <= 7){
-    //     options.physics.hierarchicalRepulsion.nodeDistance = 120
-    //     options.physics.hierarchicalRepulsion.springLength = 100
-    // }
-    // else if(maximumNumberOfNeuronsOnALayer <= 10){
-    //     options.physics.hierarchicalRepulsion.nodeDistance = 130
-    //     options.physics.hierarchicalRepulsion.springLength = 110
-    // }
-    // else if(maximumNumberOfNeuronsOnALayer <= 13){
-    //     options.physics.hierarchicalRepulsion.nodeDistance = 160
-    //     options.physics.hierarchicalRepulsion.springLength = 160
-    // }
-    //
-    // else if(maximumNumberOfNeuronsOnALayer <= 16){
-    //     options.physics.hierarchicalRepulsion.nodeDistance = 180
-    //     options.physics.hierarchicalRepulsion.springLength = 180
-    // }
-    //
-    // else if(maximumNumberOfNeuronsOnALayer <= 20){
-    //     options.physics.hierarchicalRepulsion.nodeDistance = 200
-    //     options.physics.hierarchicalRepulsion.springLength = 200
-    // }
-
+    // Here we modify the spacing between the nodes on the same layer, based on the maximum number of neurons on a layer
     options.physics.hierarchicalRepulsion.nodeDistance = DEFAULT_NODE_DISTANCE
     options.physics.hierarchicalRepulsion.springLength = DEFAULT_SPRING_LENGTH
-
     if(maximumNumberOfNeuronsOnALayer > MAX_NB_OF_NODES_PER_LAYER_THRESHOLD){
         let dif = (maximumNumberOfNeuronsOnALayer - MAX_NB_OF_NODES_PER_LAYER_THRESHOLD) * 7
         options.physics.hierarchicalRepulsion.nodeDistance += dif
@@ -234,10 +152,12 @@ function drawGraph(network_architecture, containerId){
     drawCustomGraph(nrLayers, LayerSizeList, containerId)
 }
 
+// Draw a representation of the Perceptron, with inputSize inputs, followed by a n-th input, with specified labels on the input nodes and the weigh edges.
 function drawPerceptron(inputs, inputSize, weights){
     let nodeList = []
     let edgeList = []
 
+    // Configure the node of the Perceptron, with a label illustrating the fhe formula of the weighted sum of the inputs and add it to the nodeList[] array
     let perceptronNode = {
         id: 'p',
         label: 'z = '+decodeURI('%CE%A3')+' xi*wi',
@@ -246,6 +166,7 @@ function drawPerceptron(inputs, inputSize, weights){
     }
     nodeList.push(perceptronNode)
 
+    // Configure the input nodes of the Perceptron and the weight edges, adding them to the nodesList[] and the edgeList[] arrays
     for (let i=0; i<inputSize; i++){
         let nodeId = `x_${i}`
         let nodeLabel = inputs[i]
@@ -256,20 +177,22 @@ function drawPerceptron(inputs, inputSize, weights){
             color: {border: NODE_BORDER_COLOR, background: INPUT_OUTPUT_LAYER_COLOR},
         }
         nodeList.push(node)
-
         let edge = {from: nodeId, to: perceptronNode.id, label: weights[i]}
         edgeList.push(edge)
     }
 
+    // Configure the n-th node, connected with perceptron node through the n-th edge
     let nthInputNode = {id: 'x_n', label: 'xn', level: 0, color: {border: NODE_BORDER_COLOR, background: INPUT_OUTPUT_LAYER_COLOR},}
     let lastNumberedInputNode = nodeList[nodeList.length - 1]
+    // The dashed edge is the 3 points between the last input node and the n-th input node
     let dashedEdge = {from: lastNumberedInputNode.id, to: nthInputNode.id, dashes: [0.1, 15], arrows: {to: {enabled: false}}, width: 5}
     let nthEdge = {from: nthInputNode.id, to: perceptronNode.id, label: 'wn'}
     nodeList.push(nthInputNode)
     edgeList.push(dashedEdge)
     edgeList.push(nthEdge)
 
-    let invisibleNode = {
+    // The box on the right part of the figure, illustrating the binary step activation function of the perceptron
+    let activationFunctionBox = {
         id: 'invisible',
         shape: 'box',
         label:
@@ -279,10 +202,13 @@ function drawPerceptron(inputs, inputSize, weights){
             align: 'left'
         },
         color:{border: NODE_BORDER_COLOR, background: 'whitesmoke'}}
-    nodeList.push(invisibleNode)
-    let outputEdge = {from: perceptronNode.id, to: invisibleNode.id}
+    nodeList.push(activationFunctionBox)
+    let outputEdge = {from: perceptronNode.id, to: activationFunctionBox.id}
     edgeList.push(outputEdge)
 
+    // Configure the vis.js figure, using the nodeList[] and the edgeList[] arrays that we populated above,
+    // the id of the container HTML element and the options object presented in vis.js section of the second
+    // chapter of the thesis
     let data = {nodes: new vis.DataSet(nodeList), edges: new vis.DataSet(edgeList)}
     let container = $('#perceptron-div')
     let containerElement = $('#perceptron-div')[0]

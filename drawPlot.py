@@ -4,11 +4,11 @@ from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from nn import convert_from_one_hot, convert_to_one_hot
 
+TRAIN_COLORS = ['rgb(172,84,84)', 'rgb(84,99,172)', 'rgb(69,118,69)', 'Orange']
+VAL_COLORS = ['rgb(177,109,109)', 'rgb(130,139,179)', 'rgb(97,120,97)', 'rgb(244,213,158)']
+
 
 def return_dataset_scatters(dataset, train, labels, marker_size):
-    # colors = ['rgb(172,84,84)', 'rgb(84,99,172)', 'rgb(69,118,69)', 'Orange']
-    train_colors = ['rgb(172,84,84)', 'rgb(84,99,172)', 'rgb(69,118,69)', 'Orange']
-    test_colors = ['rgb(177,109,109)', 'rgb(130,139,179)', 'rgb(97,120,97)', 'rgb(244,213,158)']
 
     unique_labels = list(set(labels))
 
@@ -23,11 +23,11 @@ def return_dataset_scatters(dataset, train, labels, marker_size):
     if train:
         border_color = 'Black'
         name = 'Train Label '
-        colors = train_colors
+        colors = TRAIN_COLORS
     else:
         border_color = 'DarkGrey'
-        name = 'Test Label '
-        colors = test_colors
+        name = 'Validation Label '
+        colors = VAL_COLORS
 
     for unique_label in unique_labels:
         scatter = go.Scatter(
@@ -87,9 +87,7 @@ def create_blobs_dataset(n_clusters=2, n_colors=2, n_samples_per_cluster=500, no
 
     fig = go.Figure(
         data=train_scatter + test_scatter,
-        layout={
-            'height': 500,
-        }
+        layout={'height': 500}
     )
 
     return fig, dataset_train, labels_train, dataset_test, labels_test, {'n_samples': n_samples_per_cluster,
@@ -104,9 +102,7 @@ def create_moons_dataset(n_samples_per_cluster=500, noise=0.1, test_size=0.1):
     train_scatter, test_scatter = plot_dataset(dataset_train, dataset_test, labels_train, labels_test)
     fig = go.Figure(
         data=train_scatter + test_scatter,
-        layout={
-            'height': 500,
-        }
+        layout={'height': 500,}
     )
     return fig, dataset_train, labels_train, dataset_test, labels_test, {'n_samples': n_samples_per_cluster,
                                                                          'noise': noise, 'test_size': test_size}
@@ -118,9 +114,7 @@ def create_circles_dataset(n_samples_per_cluster=500, noise=0.05, factor=0.2, te
     train_scatter, test_scatter = plot_dataset(dataset_train, dataset_test, labels_train, labels_test)
     fig = go.Figure(
         data=train_scatter + test_scatter,
-        layout={
-            'height': 500,
-        }
+        layout={'height': 500,}
     )
     return fig, dataset_train, labels_train, dataset_test, labels_test, {'n_samples': n_samples_per_cluster,
                                                                          'noise': noise, 'factor': factor,
@@ -232,12 +226,14 @@ def plot_decision_boundary(dataset, labels, n_labels, model, steps=500, boundary
     Function to plot the decision boundary and data points of a model trained to classify 2-dimensional data-set.
     :param dataset: 2-dimensional data-set that the model was trained on;
     :param labels: the labels of the dataset; for multi-class classification problem, one-hot encoding is used
-    :param model: compiled sequential keras model, with 2 neurons on the input (corresponding to the 2 coordinates of the training data-set) and 1 neuron on the output (prediction for label);
-    :param steps: dimension for the mesh on which the decision boundaries will be drawn; the bigger, the finer the boundaries, but more omputationally expensive
+    :param n_labels: the number of distinct labels, which tells us if we are dealing with a two-class or multi-class
+    classification problem
+    :param model: compiled sequential keras model, with 2 neurons on the input (corresponding to the 2 coordinates of
+    the training data-set) and 1 neuron on the output (for two-class problem), or n_labels neurons (for multi-class problem);
+    :param steps: dimension for the mesh on which the decision boundaries will be drawn; the bigger, the finer the
+    boundaries, but more computationally expensive
     :return: a plotly heatmap illustrating the decision boundaries of the model, as well as the training data-set
     """
-
-    colors = ['rgb(172,84,84)', 'rgb(84,99,172)', 'rgb(69,118,69)', 'rgb(254, 217, 166)']
 
     # In the case of multi-class classification (more than two), a one-hot encoding for the labels was used in the
     # training process (e.g. for label 1, the one-hot encoding is [0,1,0], for 2, [0,0,1])
@@ -278,14 +274,15 @@ def plot_decision_boundary(dataset, labels, n_labels, model, steps=500, boundary
     z = predictions.reshape((steps, steps))
 
     # Colorscale, where
-    # - for two-class classification: we bind the color red to the label 0 (negative predictions), white for 0.5, and blue for 1 (positive predictions)
+    # - for two-class classification: we bind the color red to the label 0 (negative predictions),
+    #       white for 0.5, and blue for 1 (positive predictions)
     # - for multi-class classification: we directly use the color array
     if n_labels == 2:
-        colorscale = [[0, colors[0]], [0.5, 'white'], [1, colors[1]]]
+        colorscale = [[0, TRAIN_COLORS[0]], [0.5, 'white'], [1, TRAIN_COLORS[1]]]
     elif n_labels == 3:
-        colorscale = colors[:3]
+        colorscale = TRAIN_COLORS[:3]
     else:
-        colorscale = colors
+        colorscale = TRAIN_COLORS
 
     # We compute a heatmap by taking every point from the grid (each point has x coordinate in x_span and y
     # coordinate in y_span), and based on its predicted value from z (computed by the model), associate a color from
@@ -297,9 +294,7 @@ def plot_decision_boundary(dataset, labels, n_labels, model, steps=500, boundary
             y=y_span,
             colorscale=colorscale
         ),
-        layout=dict(
-            showlegend=False
-        )
+        layout={'showlegend': False}
     )
 
     dataset_scatters = return_dataset_scatters(dataset, True, labels, 10)
