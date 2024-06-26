@@ -162,8 +162,5 @@ function retrieve_train_data(){
 $(document).ready(function(){
     let train_data = retrieve_train_data()
     addResetBehaviour()
-    // addConfirmBehaviour(network_architecture.nr_hidden_layers, false)
-    // loadHyperparameters(network_architecture)
-    // loadLossFunction(network_architecture)
     addTrainButtonFunctionality()
 })
