@@ -7,7 +7,7 @@ $(document).ready(function() {
     drawPlot('tanh_derivative_function_plot')
     drawPlot('relu_function_plot')
     drawPlot('relu_derivative_function_plot')
-    let network_architecture = retrieve_network_architecture()
+    let network_architecture = retrieve_train_data()
     drawGraph(network_architecture, '#nn-graph-act-canvas-div')
     configureActivationForm(network_architecture.nr_hidden_layers)
     addConfirmBehaviour(network_architecture.nr_hidden_layers, true)

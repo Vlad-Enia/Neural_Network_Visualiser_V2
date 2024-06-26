@@ -7,6 +7,7 @@
     box-shadow: #444444;
     position: relative;
     float: left;
+
 }
 
 .plot-div{
@@ -114,6 +115,7 @@ figcaption{
     display: flex;
     flex-direction: column;
     width: 100%;
+    height: 800px;
     margin-left: 5%;
 }
 
@@ -129,12 +131,12 @@ figcaption{
 }
 
 .configure-dataset-controls{
-    height: 15%;
+    height: 25%;
     border: 1px solid lightgray;
     border-radius: 5px;
     margin-top: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     padding-left: 10px;
 }
 
@@ -142,7 +144,7 @@ figcaption{
     width: 100%;
     display: flex;
     justify-content: center;
-    padding-top: 25px;
+    padding-top: 0;
 }
 
 .figure-div{
@@ -157,6 +159,10 @@ figcaption{
     justify-content: center
 }
 
+.img_caption{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
 
 .introduction{
     margin-top: 50px;
@@ -171,4 +177,7 @@ option{
     font-size: 14px;
 }
 
+.confirm-architecture{
+    margin: 10px;
+}
 

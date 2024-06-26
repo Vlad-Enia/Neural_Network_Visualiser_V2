@@ -22,7 +22,7 @@ function configureForm(network_architecture){
 }
 
 $(document).ready(function () {
-    let network_architecture = retrieve_network_architecture()
+    let network_architecture = retrieve_train_data()
     configureForm(network_architecture)
     onInputChange()
     addFormBehaviour('#nn-graph-div', '/train')

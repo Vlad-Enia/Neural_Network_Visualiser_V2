@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
         <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script src="../static/scripts/indexScript.js"></script>
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
         <script src="../static/scripts/indexScript.js"></script>
@@ -16,6 +17,7 @@
         <script src="../static/scripts/guideScript.js"></script>
         <script src="../static/scripts/notify.js"></script>
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
+        <link rel="stylesheet" href="../static/stylesheets/progress.css">
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <title>NNViz</title>
@@ -42,113 +44,89 @@
             </nav>
         </div>
         <div class="header">
-            <h2>A Brief Introduction to <b>Neural Networks</b></h2>
-            <h2><a href="/guide/1"><button class="btn-primary btn">Next Step</button></a></h2>
+            <h2><b>Step 0:</b> Choose task scenario</h2>
+            <div class="progress">
+                <div class="circle active">
+                    <a href=""><span class="label">0</span></a>
+                    <p id="input" class="title">Task</p>
+                </div>
+                <span class="bar active"></span>
+                <div class="circle">
+                    <a href=""><span class="label">1</span></a>
+                    <p id="architecture" class="title">Architecture</p>
+                </div>
+                <span class="bar"></span>
+                <div class="circle">
+                    <a href=""><span class="label">2</span></a>
+                    <p id="dataset" class="title">Dataset</p>
+                </div>
+            </div>
         </div>
         <div id="content">
             <div id="why-div" class="introduction">
-
                 <br>
-                <h4><b>Machine Learning</b> Concepts</h4>
+                <h4>Point Clouds</h4>
                 <br>
                 <ul>
                     <li>
                         <h5>
-                            <b>Machine Learning</b> is the field of <b>Artificial Intelligence</b> that studies computer algorithms able to learn from input data with the purpose of making
-                            accurate predictions on new, unseen data. In other words, the goal of these algorithms, that have as output <b>models</b>, is to generalize on past data.
+                            In order to showcase the phenomenon of <b>Geometric Deep Learning</b> in the most visually appealing way, we've chosen 3D representations, in the form of
+                            <b>point clouds</b>, as the input data that will be fed into the neural nets.
                         </h5>
                     </li>
                     <li>
                         <h5>
-                            These <b>models</b> consist of a set of <b>parameters</b>, often called <b>weights</b>, that, during the training process, are adjusted. The training is conducted in <b>epochs</b>.
-                            An epoch is done after all the instances of the training dataset have been fed to the model.
+                            In the field of 3D Modelling, point clouds are represented by sets of data points in a 3D coordinate system (i.e. a \(xyz\) ax system).
                         </h5>
                     </li>
                     <li>
                         <h5>
-                            A different set of parameters, called <b>hyper-parameters</b>, are used to control the training process.
+                            Each point represents a single spatial measurement of the object's exterior surface.
                         </h5>
                     </li>
                 </ul>
 
 
                 <br>
-                <h4>What are <b>Neural Networks</b>?</h4>
+                <h4>Classification vs. Segmentation</h4>
                 <br>
                 <ul>
                     <li>
                         <h5>
-                            The field of <b>Neural Networks</b> is a subset of <b>Machine Learning</b> that studies networks are inspired by the structure and function of the brain, by mimicking
-                            the way the biologic neurons signal to one another.
+                            This app offers the possibility of training neural nets on either a classification or a segmentation task.
                         </h5>
                     </li>
                     <li>
                         <h5>
-                            Neural networks, also known as artificial neural networks, are comprised of <b>neurons</b>, often called <b>nodes</b>.
+                            <b>Classification</b> involves assigning semantic labels to whole samples (i.e. recognizing objects as a whole)
                         </h5>
                     </li>
                     <li>
                         <h5>
-                            The simplest kind of neural network is the <b>perceptron</b> network, which consists of a single layer containing only one neuron. The inputs are fed directly into this neuron
-                            via a series of weights. The sum of the products between each input and its respective weight is computed and if the value of the sum is above some threshold (usually \(0\))
-                            the neuron fires and outputs the activated value (typically \(1\)). Otherwise, it outputs the deactivated value (typically \(-1\) or \(0\)). Combining more than one of
-                            the perceptron neuron results in a <b>single-layer perceptron</b> network.
-                        </h5>
-                        <br>
-                        <figure>
-                            <div id="perceptron-div" class="nn-graph-div"></div>
-                            <figcaption>
-                                The Perceptron Network.
-                            </figcaption>
-                        </figure>
-                        <br>
-                        <h5>
-                            You can see above that the perceptron applies a function <i>f</i> on the <i>z</i>, the sum of the products between each input and its weight. These functions used by neurons are called
-                            <b>activation functions</b>, and their outputs represent the output of the neuron. In the case of the perceptron, the activation function used is the <b>step function</b>.
+                            <b>Segmentation</b> involves assigning labels to each point individually, in a process that aims to separate them into smaller groups, representing a particular
+                            part, surface of feature of an object.
                         </h5>
                     </li>
-                    <li>
-                        <h5>
-                            Because it is described by a linear equation, the perceptron is a <b>linear classifier</b>. Therefore, in a two-dimensional space, the perceptron is described by a line, while in space
-                            with 3 or more dimensions the perceptron is described by a hyperplane.
-                        </h5>
-                        <h5>
-                            Being a linear classifier, the perceptron can only classify <b>linearly separable</b> datasets.
-                        </h5>
-                        <div class="columns-div">
-                            <figure class="plot-div">
-                                <div id="plot-div-perceptron_AND" ></div>
-                                <figcaption>
-                                    The Perceptron, being a linear classifier, successfully learns the AND function, as its graph is linearly separable.
-                                </figcaption>
-                            </figure>
-                            <figure class="plot-div">
-                                <div id="plot-div-perceptron_XOR" ></div>
-                                <figcaption>
-                                    As for the XOR function, because its graph is not linearly separable, the Perceptron is unable to classify it correctly.
-                                </figcaption>
-                            </figure>
+                </ul>
+                <br>
+                <div class="dataset_select">
+                    <div class="container">
+                        <div class="row" id="row_1">
+                            <div class="col" id="classification_select">
+                                <a href="/guide/1/class">
+                                    <img src="../static/images/modelnet/modelnet_cover.png" alt="" width="100%">
+                                </a>
+                                <span class="img_caption">Choose classification</span>
+                            </div>
+                            <div class="col" id="segmentation_select">
+                                <a href="/guide/1/seg">
+                                    <img src="../static/images/shapenet/shapenet_cover.png" alt="" width="100%">
+                                </a>
+                                <span class="img_caption">Choose segmentation</span>
+                            </div>
                         </div>
-                        <br>
-                    </li>
-                    <li>
-                        <h5>
-                            The most common type of neural networks architectures is the <b>feed-forward</b> (also known as the <b>multi-layer perceptron</b>).
-                            These networks are composed of at least three <b>layers</b> of neurons. Each node from one layer is connected through <b>weighted edges</b> to all the neurons on the next layer.
-                            These type of networks is the heart of <b>Deep Learning</b>.
-                        </h5>
-                        <figure>
-                            <div id="general-nn" class="nn-graph-div"></div>
-                            <figcaption>
-                                General depiction of feed-forward neural network: directed graphs, where each node represents neuron, and each edge represents a weighted link between them (i.e. every connection or edge
-                                between a neuron on a layer and another has an associated weight to it)<br>
-                                It can be observed that the network is organised in layers. It starts with the input layer, colored in blue. The last layer (rightmost one), is the output layer, also colored in blue.
-                                The ones in the middle, colored in green, are the hidden layers.
-                            </figcaption>
-                        </figure>
-                    </li>
-                </ul>
-                <br>
+                    </div>
+                </div>
             </div>
         </div>
     </body>

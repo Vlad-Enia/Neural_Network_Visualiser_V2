@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        <script src="../../static/scripts/indexScript.js"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.12.1.min.js"></script>
+        <script src="../../static/scripts/drawPlot.js"></script>
+        <script src="../../static/scripts/guide1Script.js"></script>
+        <script src="../../static/scripts/notify.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="../../static/stylesheets/generalStyle.css">
+        <link rel="stylesheet" href="../../static/stylesheets/guideStyle.css">
+        <link rel="stylesheet" href="../../static/stylesheets/progress.css">
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+        <title>NNViz</title>
+    </head>
+    <body>
+        <div id="navbarDiv">
+            <nav class="navbar navbar-expand-lg" id="navbar">
+                <div class="logo">
+                    <img src="../static/images/NNViz%20Logo%202.png" width="200" alt="" id="logo">
+                </div>
+                <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" id="homeLink" href="/">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="homeLink" href="/guide">Guide</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="homeLink" href="/train">Train</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="header">
+            <h2><b>Step 1:</b> Choose neural network</h2>
+            <div class="header">
+                <div class="progress">
+                    <div class="circle done">
+                        <a href="/guide"><span class="label">0</span></a>
+                        <p id="input" class="title">Task</p>
+                    </div>
+                    <span class="bar done"></span>
+                    <div class="circle active">
+                        <a href=""><span class="label">1</span></a>
+                        <p id="architecture" class="title">Architecture</p>
+                    </div>
+                    <span class="bar active"></span>
+                    <div class="circle">
+                        <a href=""><span class="label">2</span></a>
+                        <p id="dataset" class="title">Dataset</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <div id="why-div" class="introduction">
+                <p>
+                    For the task of <b>segmentation</b>, we propose two different neural network architectures:
+                </p>
+                <ul>
+                    <li>
+                        <p>
+                            <b>PointNet</b> based architecture, which is a novel type of convolutional neural network designed to consume point clouds.
+                        </p>
+                    </li>
+                    <ul>
+                        <li>
+                            <p>
+                                Learns based only on <b>point coordinates</b>, by performing a series of convolutions.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                In this implementation, PointNet makes use of <b>1-dimensional convolution</b>. The output value of a layer with input size \( (B, C_{in} N) \) and output \((B, C_{out} N_{out})\) is:
+                                <br><br>
+                                \(out(B_i, C_{out_j}) = bias(C_{out_j}) + \sum_{k=0}^{C_{in}-1}weight(C_{out_j}, k) * input(B_i,k)\), where
+                                <ul>
+                                    <li>\(*\) is the cross-correlation operator,</li>
+                                    <li>\(B\) is batch size,</li>
+                                    <li>\(C\) denotes the number of channels,</li>
+                                    <li>\(N\) is the sequence length (in our case, the number of points).</li>
+                                </ul>
+                            </p>
+                        </li>
+                        <li>
+                            <p>This is the PointNet architecture:</p>
+                        </li>
+                    </ul>
+
+                    <img src="../../static/images/pointnet/PointNet_Seg.drawio.svg"/>
+                    <br><br><br>
+
+                    <li>
+                        <p>
+                            <b>Graph Convolutional Neural Network (GCN)</b>
+                        </p>
+                    </li>
+                    <ul>
+                        <li>
+                            <p>Designed to learn on <b>point coordinates</b>, <b>edges</b> and <b>edge weights</b>.</p>
+                        </li>
+                        <li>
+                            <p>
+                                The network perform a series of <b>graph convolutions</b>, using <b>GCNConv</b> layers, with the following propagation rule:
+                                <br><br>
+                                \( X^{(l+1)} = \hat{D}^{-1/2}\hat{A}\hat{D}^{-1/2}X^{(l)}W^{(l)} \), where
+                            </p>
+                            <ul>
+                                <li><p>\(X^{(l)}\) - input for layer \((l)\)</p></li>
+                                <li><p>\(\hat{A} = A + I\), where \(A\) is the adjacency matrix of the graph, and \(I\) is the identity matrix (i.e. \(\hat{A}\) is the adjacency matrix with added self-loops)</p></li>
+                                <li><p>\(\hat{D}\) - diagonal node degree matrix for graph with self loops, measuring the degree of each node (i.e. \(\hat{D}_{ii} = \sum_{j}\hat{A}_{ij}\))</p></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <p>
+                                This is the GCN architecture:
+                            </p>
+                        </li>
+                    </ul>
+
+                    <img src="../../static/images/gcn/GCN_Seg.drawio.svg"/>
+                    <br><br><br>
+                </ul>
+                <br>
+            </div>
+            <div class="confirm-div">
+                <a href="/guide/1/pointnet"><button class="btn confirm-architecture btn-primary">PointNet</button></a>
+                <a href="/guide/1/gcn"><button class="btn confirm-architecture btn-primary">GCN</button></a>
+            </div>
+        </div>
+    </body>
+</html>

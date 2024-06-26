@@ -127,19 +127,7 @@ function drawCustomGraph(numberOfLayers, layerSizeList, containerID){
     new vis.Network(container[0], data, options)
 }
 
-function retrieve_network_architecture(){
-    let result;
-    $.ajax({
-        method: 'GET',
-        async: false,
-        url: '/retrieve_network_architecture',
-        success: function(response){
-            result = response
-            console.log(response)
-        }
-    })
-    return result
-}
+
 
 function drawGraph(network_architecture, containerId){
     let nrHiddenLayers = network_architecture.nr_hidden_layers
