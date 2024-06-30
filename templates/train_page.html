@@ -8,11 +8,13 @@
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
+        <script src='https://cdn.plot.ly/plotly-2.32.0.min.js'></script>
         <script src="../static/scripts/indexScript.js"></script>
         <script src="../static/scripts/drawPlot.js"></script>
         <script src="../static/scripts/trainScript.js"></script>
         <script src="../static/scripts/notify.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
@@ -52,7 +54,7 @@
                         <div class="col">
                             <br>
                             <label for="epochs" class="form-label">Epochs</label>
-                            <input type="number" min="10" max="50" step="1" id="epochs" name="epochs" value="30" class="form-control">
+                            <input type="number" min="1" max="50" step="1" id="epochs" name="epochs" value="1" class="form-control">
                         </div>
                         <div class="col">
                             <br>
@@ -95,7 +97,7 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <a href="/train/change_input"><button class="btn-primary btn configure-train-btn">Change Input</button></a>
+                                <a href="/guide/2"><button class="btn-primary btn configure-train-btn">Change Input</button></a>
                             </div>
                         <div class="row">
                             <div class="col">
@@ -124,7 +126,10 @@
 
             <div class="history-plots">
                 <div id="loss-plot" class="plot white-bg"></div>
-                <div id="acc-plot" class="plot white-bg"></div>
+                <div class="plot acc-panel white-bg">
+                    <div id="acc-plot" class="white-bg"></div>
+                    <div id="acc-table" class="white-bg"></div>
+                </div>
             </div>
         </div>
     </body>

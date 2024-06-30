@@ -65,12 +65,43 @@ def load_guide_step(step):
 
 @app.route('/plot')
 def load_perceptron_and_plot():
-    fig_loss, fig_acc = drawPlot.draw_plot()
-    with open('static/data/plots/act.html', 'r', encoding='utf-8') as f:
-        fig_act = f.read()
-    with open('static/data/plots/pred.html', 'r', encoding='utf-8') as f:
-        fig_pred = f.read()
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    fig_loss, fig_acc = drawPlot.draw_plot(opts)
+    fig_act = ''
+    fig_pred = ''
+    if session['train_task'] == 'seg':
+        fig_act, fig_pred = nn.predict(opts)
+        # with open('static/data/plots/act.html', 'r', encoding='utf-8') as f:
+        #     fig_act = f.read()
+        # with open('static/data/plots/pred.html', 'r', encoding='utf-8') as f:
+        #     fig_pred = f.read()
     return {'fig_loss': fig_loss, 'fig_acc': fig_acc, 'fig_act': fig_act, 'fig_pred': fig_pred}
+
+@app.route('/resistance')
+def test_resistance():
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    data = nn.test_resistance(opts)
+    return {'data': data}
 
 @app.route('/default_dataset/<string:obj_name>')
 def load_default_dataset(obj_name):
@@ -145,7 +176,14 @@ def retrieve_dataset():
 
 @app.route('/confirm_dataset', methods=['POST'])
 def confirm_dataset():
-    session['obj_name'] = request.form.get('obj_name')
+    print(request.form)
+    session['obj_name']         = request.form.get('obj_name')
+    session['n_pts']            = int(request.form.get('n_pts'))
+    if request.form.get('noise') != '':
+        session['noise']            = float(request.form.get('noise'))
+    session['sel_graph_alg']    = request.form.get('sel_graph_alg')
+    session['k']                = int(request.form.get('sel_k'))
+    session['r']                = float(request.form.get('sel_r'))
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 @app.route('/retrieve_dataset_params')
@@ -155,44 +193,47 @@ def retrieve_dataset_params():
     return param_dict
 
 
-@app.route('/retrieve_train_data')
-def retrieve_train_data():
-    train_data = {
-        'task': session['train_task'],
-        'net': session['train_net']
-    }
-
-    return train_data
-
-
 @app.route('/train', methods=['GET'])
 def load_train_page():
     return flask.render_template('train_page.html')
 
 
-@app.route('/train/change_input')
-def load_change_input_page():
-    return flask.render_template('change_input.html')
+@app.route('/train/train_data', methods=['GET'])
+def retrieve_train_data():
+    train_data = {
+        'task': session['train_task'],
+        'net': session['train_net']
+    }
+    return train_data
 
 
-@app.route('/train/change_architecture')
-def change_architecture():
-    return flask.render_template('change_architecture.html')
+@app.route('/train/train_data', methods=['POST'])
+def update_train_data():
+    session['train_task'] = request.form['task']
+    session['train_net'] = request.form['net']
+    if session['train_net'] == 'gcn':
+        session['n_pts'] = 1000
+    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 @app.route('/train/train_nn', methods=['POST'])
 def train_nn():
-    model = nn.load_model('./static/config/model')
     epochs = int(request.form['epochs'])
     batch_size = int(request.form['batch_size'])
-    dataset_train = load_object('./static/config/dataset_train.bin')
-    dataset_test = load_object('./static/config/dataset_test.bin')
-    labels_train = load_object('./static/config/labels_train.bin')
-    labels_test = load_object('./static/config/labels_test.bin')
-    dataset_params = load_object('./static/config/input_dataset_params.bin')
-    n_labels = dataset_params['n_colors']
-    history = nn.train_nn(model, dataset_train, labels_train, dataset_test, labels_test, n_labels, epochs, batch_size)
-    model.save('./static/config/model')
-    save_object(history.history, './static/config/history.bin')
+    session['lr'] = float(request.form['lr'])
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'epochs': epochs,
+        'batch_size': batch_size,
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    nn.init_train(opts)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 

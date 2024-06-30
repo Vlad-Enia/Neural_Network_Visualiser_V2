@@ -38,6 +38,9 @@ function configureForm(dataset_name, paramDict){
             $(inputSelector).removeAttr('hidden')
         }
         else {
+            if (k.includes('n_pts_fixed')){
+                $('#n_pts').attr('value', v)
+            }
             $(inputSelector).attr('type', 'number')
             $(inputSelector).attr('value', v)
         }
