@@ -34,8 +34,16 @@ function configureForm(dataset_name, paramDict){
     $.each(paramDict, function(k, v){
         let inputSelector = `form #${k}`
         let labelSelector = `form #${k}-label`
-        $(inputSelector).attr('type', 'number')
-        $(inputSelector).attr('value', v)
+        if(k.includes('sel')){
+            $(inputSelector).removeAttr('hidden')
+        }
+        else {
+            if (k.includes('n_pts_fixed')){
+                $('#n_pts').attr('value', v)
+            }
+            $(inputSelector).attr('type', 'number')
+            $(inputSelector).attr('value', v)
+        }
         $(labelSelector).removeAttr('hidden')
     })
 }
@@ -45,7 +53,6 @@ function addFormBehaviour(){
         event.preventDefault()
         let formData = $(this).serialize()
         let datasetName = $('#dataset-form #dataset-name').val()
-        console.log(datasetName)
         $.ajax({
             type: 'POST',
             url: '/custom_dataset',
@@ -69,27 +76,9 @@ function addConfirmDatasetHandler(){
             dataType: 'json',
             data: formData,
             success: function(){
-                window.location.href = '/guide/2'
-            },
-            error: function(){
-                window.location.href = '/guide/2'
-            }
-        })
-    })
-
-    $('.confirm-div #confirm-dataset-change').click(function(event){
-        event.preventDefault()
-        let formData = $('#dataset-form').serialize()
-        $.ajax({
-            type: 'POST',
-            url: '/confirm_dataset',
-            dataType: 'json',
-            data: formData,
-            success: function(){
                 window.location.href = '/train'
             },
             error: function(){
-                window.location.href = '/train'
             }
         })
     })
@@ -98,8 +87,6 @@ function addConfirmDatasetHandler(){
 
 
 $(document).ready(function(){
-    drawPlot('moons_dataset')
-    drawPlot('moons_dataset_classified')
     addDatasetLinkHandler()
     addFormBehaviour()
     addConfirmDatasetHandler()

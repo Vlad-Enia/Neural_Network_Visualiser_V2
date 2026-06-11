@@ -1,6 +1,6 @@
 import json
 import flask
-from flask import Flask
+from flask import Flask, session
 from flask import request
 import drawPlot
 import pickle
@@ -10,7 +10,8 @@ import os.path
 import nn
 
 app = Flask(__name__)
-
+app.config['SECRET_KEY'] = 'secret'
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 def save_object(object, path):
     with open(path, 'wb+') as f:
@@ -23,14 +24,6 @@ def load_object(path):
     return object
 
 
-def save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_dict):
-    save_object(dataset_train, './static/config/dataset_train.bin')
-    save_object(dataset_test, './static/config/dataset_test.bin')
-    save_object(labels_train, './static/config/labels_train.bin')
-    save_object(labels_test, './static/config/labels_test.bin')
-    save_object(param_dict, './static/config/input_dataset_params.bin')
-
-
 @app.route('/')
 def hello_world():  # put application's code here
     return flask.render_template('index.html')
@@ -41,38 +34,135 @@ def load_guide_page():
     return flask.render_template('guide.html')
 
 
+@app.route('/guide/<int:step>/<scenario>')
+def set_train_scenario(step, scenario):
+    url = '/guide/'
+    if step == 1:
+        if scenario == 'class' or scenario == 'seg':
+            session['train_task'] = scenario
+        elif scenario == 'pointnet' or scenario == 'gcn':
+            session['train_net'] = scenario
+            step += 1
+        url = url + str(step)
+    return flask.redirect(url)
+
+
+
 @app.route('/guide/<int:step>')
 def load_guide_step(step):
     if 0 <= step <= 5:
         if step == 0:
             page_name = 'guide.html'
         else:
-            page_name = f'guide_{step}.html'
+            if step == 1 or step == 2:
+                if session['train_task']:
+                    page_name = f'guide_{step}_{session['train_task']}.html'
+                else:
+                    page_name = 'guide.html'
+            else:
+                page_name = f'guide_{step}.html'
         return flask.render_template(page_name)
 
+@app.route('/plot')
+def load_perceptron_and_plot():
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    fig_loss, fig_acc = drawPlot.draw_plot(opts)
+    fig_act = ''
+    fig_pred = ''
+    if session['train_task'] == 'seg':
+        fig_act, fig_pred = nn.predict(opts)
+        # with open('static/data/plots/act.html', 'r', encoding='utf-8') as f:
+        #     fig_act = f.read()
+        # with open('static/data/plots/pred.html', 'r', encoding='utf-8') as f:
+        #     fig_pred = f.read()
+    return {'fig_loss': fig_loss, 'fig_acc': fig_acc, 'fig_act': fig_act, 'fig_pred': fig_pred}
 
-@app.route('/graph')
-def load_graph():
-    return flask.render_template('graph.html')
+@app.route('/resistance')
+def test_resistance():
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    data = nn.test_resistance(opts)
+    return {'data': data}
 
+@app.route('/default_dataset/<string:obj_name>')
+def load_default_dataset(obj_name):
+    if session['train_task'] == 'class':
+        seg = False
+    else:
+        seg = True
+    if session['train_net'] == 'pointnet':
+        graph = False
+        n_pts = 5000
+    else:
+        graph = True
+        n_pts = 1000
+    sel_graph_alg = 'knn'
+    k = 15
+    r = 0.05
+    noise = 0
 
-@app.route('/plot/<string:plot_name>')
-def load_perceptron_and_plot(plot_name):
-    template_name = plot_name + '.html'
-    return flask.render_template(template_name)
+    session['n_pts'] = n_pts
+    session['sel_graph_alg'] = sel_graph_alg
+    session['k'] = k
+    session['r'] = r
+    session['noise'] = noise
 
-
-@app.route('/default_dataset/<string:dataset_name>')
-def load_default_dataset(dataset_name):
-    fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_plot(dataset_name)
-    return {'fig': fig.to_html(full_html=False, div_id='dataset-plot-div'), 'params': param_dict}
+    fig, meta_dict, param_dict = drawPlot.visualise_graph(obj_name, noise=0, graph=graph, seg=seg, n_pts=n_pts, sel_graph_alg=sel_graph_alg, k=k, r=r)
+    return {'fig': fig, 'params': param_dict, 'meta': meta_dict}
+    # fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_plot(dataset_name)
+    # return {'fig': fig.to_html(full_html=False, div_id='dataset-plot-div'), 'params': param_dict}
 
 
 @app.route('/custom_dataset', methods=['POST'])
 def load_custom_dataset():
-    fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_custom_plot(
-        request.form['dataset_name'], request.form)
-    return {'fig': fig.to_html(full_html=False, div_id='dataset-plot-div'), 'params': param_dict}
+    print(request.form)
+    obj_name = request.form['obj_name']
+    if session['train_task'] == 'class':
+        seg = False
+    else:
+        seg = True
+    if session['train_net'] == 'pointnet':
+        graph = False
+        n_pts = int(request.form.get('n_pts'))
+        noise = float(request.form.get('noise'))
+        sel_graph_alg = 'knn'
+        k = 15
+        r = 0.05
+    else:
+        graph = True
+        n_pts = 1000
+        noise = 0
+        sel_graph_alg = request.form.get('sel_graph_alg')
+        k = int(request.form.get('sel_k'))
+        r = float(request.form.get('sel_r'))
+
+    session['n_pts'] = n_pts
+    session['sel_graph_alg'] = sel_graph_alg
+    session['k'] = k
+    session['r'] = r
+    session['noise'] = noise
+
+    fig, meta_dict, param_dict = drawPlot.visualise_graph(obj_name, noise=noise, graph=graph, seg=seg, n_pts=n_pts, sel_graph_alg=sel_graph_alg, k=k, r=r)
+    return {'fig': fig, 'params': param_dict, 'meta': meta_dict}
 
 
 @app.route('/retrieve_dataset')
@@ -86,19 +176,15 @@ def retrieve_dataset():
 
 @app.route('/confirm_dataset', methods=['POST'])
 def confirm_dataset():
-    dataset_name = request.form['dataset_name']
-    fig, dataset_train, labels_train, dataset_test, labels_test, param_dict = drawPlot.draw_custom_plot(dataset_name,
-                                                                                                        request.form)
-    save_dataset(dataset_train, labels_train, dataset_test, labels_test, param_dict)
-    if os.path.exists('./static/config/network_architecture.bin'):
-        network_architecture = load_object('./static/config/network_architecture.bin')
-        if param_dict['n_colors'] == 2:
-            network_architecture['output_layer_size'] = 1
-        else:
-            network_architecture['output_layer_size'] = param_dict['n_colors']
-        save_object(network_architecture, './static/config/network_architecture.bin')
+    print(request.form)
+    session['obj_name']         = request.form.get('obj_name')
+    session['n_pts']            = int(request.form.get('n_pts'))
+    if request.form.get('noise') != '':
+        session['noise']            = float(request.form.get('noise'))
+    session['sel_graph_alg']    = request.form.get('sel_graph_alg')
+    session['k']                = int(request.form.get('sel_k'))
+    session['r']                = float(request.form.get('sel_r'))
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
 
 @app.route('/retrieve_dataset_params')
 def retrieve_dataset_params():
@@ -107,149 +193,50 @@ def retrieve_dataset_params():
     return param_dict
 
 
-@app.route('/confirm_network_architecture', methods=['POST'])
-def confirm_network_architecture():
-    if os.path.exists('./static/config/network_architecture.bin'):
-        network_architecture = retrieve_network_architecture()
-        network_architecture['nr_hidden_layers'] = int(request.form['nr_hidden_layers'])
-        network_architecture['hidden_layer_size_list'] = np.array(
-            request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist()
-        network_architecture['output_layer_size'] = int(request.form['output_layer_size'])
-    else:
-        network_architecture = {
-            'nr_hidden_layers': int(request.form['nr_hidden_layers']),
-            'hidden_layer_size_list': np.array(request.form.getlist('hidden_layer_size_list[]')).astype('int').tolist(),
-            'output_layer_size': int(request.form['output_layer_size'])
-        }
-    print(network_architecture)
-    save_object(network_architecture, './static/config/network_architecture.bin')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
-@app.route('/retrieve_network_architecture')
-def retrieve_network_architecture():
-    with open('./static/config/network_architecture.bin', 'rb+') as f:
-        network_architecture = pickle.load(f)
-    return network_architecture
-
-
-@app.route('/confirm_network_activations', methods=['POST'])
-def confirm_network_activations():
-    with open('./static/config/network_architecture.bin', 'rb+') as f:
-        network_architecture = pickle.load(f)
-    network_architecture['hidden_layer_activation_list'] = request.form.getlist('hidden_layer_activation_list[]')
-    network_architecture['output_layer_activation'] = request.form['output_layer_activation']
-    print(network_architecture['hidden_layer_activation_list'])
-    print(network_architecture['output_layer_activation'])
-    save_object(network_architecture, './static/config/network_architecture.bin')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
-@app.route('/confirm_network_loss', methods=['POST'])
-def confirm_network_loss():
-    with open('./static/config/network_architecture.bin', 'rb+') as f:
-        network_architecture = pickle.load(f)
-    network_architecture['loss_function'] = request.form['loss_function']
-    save_object(network_architecture, './static/config/network_architecture.bin')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
-@app.route('/confirm_optimizer', methods=['POST'])
-def confirm_optimizer():
-    with open('./static/config/network_architecture.bin', 'rb+') as f:
-        network_architecture = pickle.load(f)
-    network_architecture['learning_rate'] = request.form['learning_rate']
-    network_architecture['batch_size'] = request.form['batch_size']
-    network_architecture['epochs'] = request.form['epochs']
-    save_object(network_architecture, './static/config/network_architecture.bin')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
-@app.route('/confirm_loss_and_lr', methods=['POST'])
-def confirm_loss_and_lr():
-    with open('./static/config/network_architecture.bin', 'rb+') as f:
-        network_architecture = pickle.load(f)
-    network_architecture['learning_rate'] = request.form['learning_rate']
-    network_architecture['loss_function'] = request.form['loss_function']
-    print(network_architecture)
-    save_object(network_architecture, './static/config/network_architecture.bin')
-    return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
-
 @app.route('/train', methods=['GET'])
 def load_train_page():
     return flask.render_template('train_page.html')
 
 
-@app.route('/train/change_input')
-def load_change_input_page():
-    return flask.render_template('change_input.html')
+@app.route('/train/train_data', methods=['GET'])
+def retrieve_train_data():
+    train_data = {
+        'task': session['train_task'],
+        'net': session['train_net']
+    }
+    return train_data
 
 
-@app.route('/train/change_architecture')
-def change_architecture():
-    return flask.render_template('change_architecture.html')
-
-
-@app.route('/train/create_nn', methods=['POST'])
-def create_nn():
-    network_architecture = retrieve_network_architecture()
-    n_hidden_layers = network_architecture['nr_hidden_layers']
-    hidden_layer_size_list = network_architecture['hidden_layer_size_list']
-    hidden_layer_activation_list = network_architecture['hidden_layer_activation_list']
-    output_layer_size = network_architecture['output_layer_size']
-    output_layer_activation = network_architecture['output_layer_activation']
-    loss_function = network_architecture['loss_function']
-    learning_rate = float(network_architecture['learning_rate'])
-    model = nn.create_nn(n_hidden_layers, hidden_layer_size_list, output_layer_size, hidden_layer_activation_list,
-                         output_layer_activation, learning_rate, loss_function)
-    nn.save_model(model, './static/config/model')
+@app.route('/train/train_data', methods=['POST'])
+def update_train_data():
+    session['train_task'] = request.form['task']
+    session['train_net'] = request.form['net']
+    if session['train_net'] == 'gcn':
+        session['n_pts'] = 1000
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
-
 
 @app.route('/train/train_nn', methods=['POST'])
 def train_nn():
-    model = nn.load_model('./static/config/model')
     epochs = int(request.form['epochs'])
     batch_size = int(request.form['batch_size'])
-    dataset_train = load_object('./static/config/dataset_train.bin')
-    dataset_test = load_object('./static/config/dataset_test.bin')
-    labels_train = load_object('./static/config/labels_train.bin')
-    labels_test = load_object('./static/config/labels_test.bin')
-    dataset_params = load_object('./static/config/input_dataset_params.bin')
-    n_labels = dataset_params['n_colors']
-    history = nn.train_nn(model, dataset_train, labels_train, dataset_test, labels_test, n_labels, epochs, batch_size)
-    model.save('./static/config/model')
-    save_object(history.history, './static/config/history.bin')
+    session['lr'] = float(request.form['lr'])
+    opts = {
+        'task': session['train_task'],
+        'net': session['train_net'],
+        'class': session['obj_name'],
+        'n_pts': session['n_pts'],
+        'epochs': epochs,
+        'batch_size': batch_size,
+        'lr': session['lr'],
+        'noise': session['noise'],
+        'graph_alg': session['sel_graph_alg'],
+        'k': session['k'],
+        'r': session['r'],
+    }
+    nn.init_train(opts)
     return json.dumps({'success': True}), 200, {'ContentType': 'application/json'}
 
 
-@app.route('/train/get_loss')
-def get_loss_plot():
-    history = load_object('./static/config/history.bin')
-    return drawPlot.plot_loss(history, 'loss')
-
-
-@app.route('/train/get_val_loss')
-def get_val_loss():
-    history = load_object('./static/config/history.bin')
-    return drawPlot.plot_loss(history, 'val_loss')
-
-
-@app.route('/train/get_decision_surface')
-def get_decision_surface():
-    dataset_train = load_object('./static/config/dataset_train.bin')
-    labels_train = load_object('./static/config/labels_train.bin')
-    model = nn.load_model('./static/config/model')
-    dataset_params = load_object('./static/config/input_dataset_params.bin')
-    n_labels = int(dataset_params['n_colors'])
-    if n_labels > 2:
-        one_hot_labels = nn.convert_to_one_hot(labels_train)
-        fig = drawPlot.plot_decision_boundary(dataset_train, one_hot_labels, dataset_params['n_colors'], model, steps=300)
-    else:
-        fig = drawPlot.plot_decision_boundary(dataset_train, labels_train, dataset_params['n_colors'], model, steps=300)
-    return fig
-
-
 if __name__ == '__main__':
-    app.run()
+    # print(app.config)
+    app.run(port=8000)

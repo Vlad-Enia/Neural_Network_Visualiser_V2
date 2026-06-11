@@ -14,7 +14,7 @@
 
 /* Form Progress */
 .progress {
-  width: 1000px;
+  width: 800px;
   margin: 30px auto 0;
   height: 120px;
   text-align: center;
@@ -38,7 +38,7 @@
 }
 .progress .bar {
   position: relative;
-  width: 107px;
+  width: 155px;
   height: 6px;
   top: 17px;
   margin-left: -190px;
@@ -68,22 +68,32 @@
   margin-bottom: 0;
 }
 
-
-#architecture, #initialization{
-  margin-left: -15px;
+.circle{
+  display: flex !important;
+  flex-direction: column !important;;
+  align-items: center !important;!important;;
 }
 
-#regularizer {
-  margin-left: -24px;
-}
 
-#activation, #optimizer{
-  margin-left: -10px;
-}
+/*#initialization{*/
+/*  margin-left: -15px;*/
+/*}*/
 
-#loss{
-  margin-left: -10px;
-}
+/*#architecture{*/
+/*  margin-left: -16px;*/
+/*}*/
+
+/*#dataset {*/
+/*  margin-left: -5px;*/
+/*}*/
+
+/*#activation, #optimizer{*/
+/*  margin-left: -10px;*/
+/*}*/
+
+/*#loss{*/
+/*  margin-left: -10px;*/
+/*}*/
 
 
 /* Done / Active */

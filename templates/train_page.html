@@ -8,13 +8,13 @@
         <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.css" type="text/css" />
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-network.min.js"> </script>
+        <script src='https://cdn.plot.ly/plotly-2.32.0.min.js'></script>
         <script src="../static/scripts/indexScript.js"></script>
-        <script src="../static/scripts/drawGraph.js"></script>
         <script src="../static/scripts/drawPlot.js"></script>
-        <script src="../static/scripts/configureNetworkActivations.js"></script>
         <script src="../static/scripts/trainScript.js"></script>
         <script src="../static/scripts/notify.js"></script>
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="../static/stylesheets/guideStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/generalStyle.css">
         <link rel="stylesheet" href="../static/stylesheets/progress.css">
@@ -52,150 +52,84 @@
                     <p>Training Controls</p>
                     <div class="row">
                         <div class="col">
-                            <button disabled id="train-btn" class="btn-primary btn">Train</button>
-                        </div>
-                        <div class="col">
                             <br>
                             <label for="epochs" class="form-label">Epochs</label>
-                            <input type="number" min="1" max="10000" step="1" id="epochs" name="epochs" value="1000" class="form-control">
+                            <input type="number" min="1" max="50" step="1" id="epochs" name="epochs" value="1" class="form-control">
                         </div>
                         <div class="col">
                             <br>
                             <label for="batch-size"  class="form-label">Batch size</label>
                             <input type="number" min="1" max="50" step="1" id="batch-size" name="batch_size" value="25" class="form-control">
                         </div>
-
+                        <div class="col">
+                            <label for="learning-rate"  class="form-label">Learning rate</label>
+                            <input type="number" min="0.001" max="0.5" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
+                        </div>
+                        <div hidden class="col">
+                            <label hidden for="sag_ratio" id="sag_ratio-label" class="form-label">Train Task</label>
+                            <select hidden class="form-control" id="sag_ratio" name="sag_ratio">
+                                 <option  value="0.4">0.4</option>
+                                 <option value="0.6">0.4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button disabled id="train-btn" class="btn-primary btn">Train</button>
+                        </div>
                     </div>
                 </div>
                 <div class="configure-train-container">
-                    <p>Network Configuration</p>
-                    <div class="configure-train-controls">
+                    <p>Training Configuration</p>
                         <div class="row">
                             <div class="col">
-                                <a href="/train/change_input"><button class="btn-primary btn configure-train-btn">Change Input</button></a>
-                            </div>
-                            <div class="col">
-                                <a href="train/change_architecture"><button class="btn-primary btn configure-train-btn">Change Architecture</button></a>
-                            </div>
-                            <div class="col">
-                                <label for="loss-function" id="loss-label" class="form-label">Loss Function</label>
-                                <select id="loss-function" class="form-select">
-                                    <option selected value="mean_squared_error">Mean Squared Error</option>
-                                    <option value="categorical_crossentropy">Cross-Entropy</option>
+                                <label for="sel_task" id="sel_task-label" class="form-label">Training Task</label>
+                                <select class="form-control" id="sel_task" name="sel_task">
+                                    <option  value="class">Classification</option>
+                                    <option value="seg">Segmentation</option>
                                 </select>
                             </div>
                             <div class="col">
-                                <label for="learning-rate"  class="form-label">Learning rate</label>
-                                <input type="number" min="0.001" max="1" step="0.001" id="learning-rate" name="learning_rate" value="0.01" class="form-control">
+                                <label for="sel_net" class="form_label" id="sel_net-label">Network Architecture</label>
+                                <select class="form-control" id="sel_net" name="sel_net">
+                                    <option value="pointnet">PointNet</option>
+                                    <option value="gcn">GCN</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <a href="/guide/2"><button class="btn-primary btn configure-train-btn">Change Input</button></a>
+                            </div>
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn-primary btn configure-train-btn apply-btn" id="reset-btn">Reset</button>
                             </div>
                         </div>
                     </div>
-                    <button class="btn-primary btn configure-train-btn apply-btn" id="reset-btn">Reset</button>
                 </div>
             </div>
             <br>
-            <div class="train-nn-dataset">
-                <div id="graph-and-activations">
-                    <div class="configure-nn-panel">
-                        <form class="configure-activation-form">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-1-activation" id="layer-1-activation-label" class="form-label">\(1^{st}\) hidden layer activation</label>
-                                        <select hidden id="layer-1-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-2-activation" id="layer-2-activation-label" class="form-label">\(2^{nd}\) hidden layer activation</label>
-                                        <select hidden id="layer-2-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-3-activation" id="layer-3-activation-label" class="form-label">\(3^{rd}\) hidden layer activation</label>
-                                        <select hidden id="layer-3-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-4-activation" id="layer-4-activation-label" class="form-label">\(4^{th}\) hidden layer activation</label>
-                                        <select hidden id="layer-4-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-5-activation" id="layer-5-activation-label" class="form-label">\(5^{st}\) hidden layer activation</label>
-                                        <select hidden id="layer-5-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-6-activation" id="layer-6-activation-label" class="form-label">\(6^{st}\) hidden layer activation</label>
-                                        <select hidden id="layer-6-activation" class="form-select">
-                                            <option value="relu" selected>ReLU</option>
-                                            <option value="sigmoid">Sigmoid</option>
-                                            <option value="tanh">Tanh</option>
-                                            <option value="linear">Linear</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label hidden for="layer-out-activation" id="layer-out-activation-label" class="form-label">Output layer activation</label>
-                                        <select hidden id="layer-out-activation" class="form-select">
-                                            <option value="sigmoid" selected>Sigmoid</option>
-                                            <option value="softmax">Softmax</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <button hidden id="confirm-network-activations" class="btn-primary btn">Confirm</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <br>
-                    <div id="nn-graph-train-div" class="nn-graph-div"></div>
-                </div>
-
-                <div id="configure-dataset-plot-train-div" class="configure-dataset-plot"></div>
+            <div class="nn-graph-div white-bg">
+                <img hidden id="nn-graph-img-pointnet-class" src="../static/images/pointnet/PointNet_Class.drawio.svg"/>
+                <img hidden id="nn-graph-img-pointnet-seg" src="../static/images/pointnet/PointNet_Seg.drawio.svg"/>
+                <img hidden id="nn-graph-img-gcn-class" src="../static/images/gcn/GCN_Class.drawio.svg" style="transform: scale(0.9);"/>
+                <img hidden id="nn-graph-img-gcn-seg" src="../static/images/gcn/GCN_Seg.drawio.svg"/>
             </div>
 
             <div class="history-plots">
-                <div id="train-loss-plot"></div>
-                <div id="test-loss-plot"></div>
+                <div  class="plot white-bg">
+                    <div id="act-plot" class="scale-085"></div>
+                </div>
+                <div  class="plot white-bg">
+                    <div id="pred-plot" class="scale-085"></div>
+                </div>
+            </div>
+
+            <div class="history-plots">
+                <div id="loss-plot" class="plot white-bg"></div>
+                <div class="plot acc-panel white-bg">
+                    <div id="acc-plot" class="white-bg"></div>
+                    <div id="acc-table" class="white-bg"></div>
+                </div>
             </div>
         </div>
     </body>

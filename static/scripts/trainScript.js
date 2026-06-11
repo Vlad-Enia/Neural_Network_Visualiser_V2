@@ -1,72 +1,88 @@
 function addResetBehaviour(){
     $('#reset-btn').click(function(){
-        let network_architecture = retrieve_network_architecture()
-        drawGraph(network_architecture, '#nn-graph-train-div')
-        addActivationValuesInForm(network_architecture.nr_hidden_layers, network_architecture.hidden_layer_activation_list, network_architecture.output_layer_activation)
-        $('#confirm-network-activations').removeAttr('hidden')
-        $.ajax({
-            method: 'GET',
-            url: '/retrieve_dataset',
-            async: false,
-            success: function(response){
-                $('#configure-dataset-plot-train-div').html(response)
-                $.notify(
-                    'The neural network was reset',
-                    {
-                        position: "bottom right",
-                        className: 'success'
-                    }
-                )
-            }
-        })
-        let loss_function = $('#loss-function').val()
-        let learning_rate = $('#learning-rate').val()
-        $.ajax({
-            method: 'POST',
-            url: '/confirm_loss_and_lr',
-            dataType: 'json',
-            async: false,
-            data:{
-                loss_function: loss_function,
-                learning_rate: learning_rate
-            },
-            success: function(){}
-        })
-
-        $.ajax({
-            method: 'POST',
-            url: '/train/create_nn',
-            async: false,
-            success: function(){
-                $.notify(
-                    'The neural network was created',
-                    {
-                        position: "bottom right",
-                        className: 'success'
-                    }
-                )
-            }
-        })
-
+        updateTrainData($('#sel_task').val(), $('#sel_net').val())
+        showNetworkArchitecture($('#sel_task').val(), $('#sel_net').val())
         $('#train-btn').removeAttr('disabled')
+        $('#loss-plot').html('')
+        $('#acc-plot').html('')
+        $('#act-plot').html('')
+        $('#pred-plot').html('')
+        $('#acc-table').html('')
     })
 }
 
-function loadHyperparameters(network_architecture){
-    $('#epochs').val(network_architecture.epochs)
-    $('#batch-size').val(network_architecture.batch_size)
-    $('#learning-rate').val(network_architecture.learning_rate)
+function showNetworkArchitecture(task, net){
+    $("#nn-graph-img-pointnet-class").attr('hidden','hidden')
+    $("#nn-graph-img-pointnet-seg").attr('hidden','hidden')
+    $("#nn-graph-img-gcn-class").attr('hidden','hidden')
+    $("#nn-graph-img-gcn-seg").attr('hidden','hidden')
+
+    const img_id = '#nn-graph-img-'+net+'-'+task
+    $(img_id).removeAttr('hidden')
 }
 
-function loadLossFunction(network_architecture){
-    console.log(network_architecture)
-    $('#loss-function').val(network_architecture.loss_function)
+function drawPlot(){
+    $.ajax({
+        method: 'GET',
+        async: false,
+        url: '/plot',
+        success: function(response){
+
+            $('#loss-plot').html(response.fig_loss)
+            $('#acc-plot').html(response.fig_acc)
+            $('#act-plot').html(response.fig_act)
+            $('#pred-plot').html(response.fig_pred)
+        }
+    })
+}
+
+function drawTable() {
+    $.ajax({
+        method: 'GET',
+        async: false,
+        url: '/resistance',
+        success: function(response){
+            values = response.data
+        }
+    })
+    var layout = {
+        with: 600,
+        height: 200,
+        margin: {
+            l: 40,
+            r: 40,
+            t: 20,
+            b: 0
+        },
+        plot_bgcolor: 'rgba(0, 0, 0, 0)',
+        paper_bgcolor: 'rgba(0, 0, 0, 0)',
+    }
+    var data = [{
+        type: 'table',
+        header: {
+            values: [["<b>Model</b>"], ["<b>Normal</b>"],
+                ["<b>Stretched</b>"], ["<b>Translated</b>"]],
+            align: "center",
+            line: {color: 'darkgrey'},
+            fill: {color: "rgba(80, 101, 168, 1)"},
+            font: {family: "Open Sans", size: 14, color: "white"}
+        },
+        cells: {
+            height: 30,
+            values: values,
+            align: "center",
+            line: {color: "darkgrey"},
+            font: {family: "Open Sans", size: 13, color: ["black"]}
+        }
+    }]
+    console.log(data)
+    Plotly.newPlot('acc-table', data, layout);
 }
 
 function addTrainButtonFunctionality(){
     $('#train-btn').click(function(){
-        let epochs = $('#epochs').val()
-        let batch_size = $('#batch-size').val()
+        $('#train-btn').attr('disabled', 'disabled')
+        $('#train-btn').html('<i class="fa fa-spinner fa-spin"></i>')
         $.notify(
             'Started training. Please wait',
             {
@@ -74,14 +90,18 @@ function addTrainButtonFunctionality(){
                 className: 'success'
             }
         )
+        let epochs = $('#epochs').val()
+        let batch_size = $('#batch-size').val()
+        let lr = $('#learning-rate').val()
         $.ajax({
             method: 'POST',
             url: '/train/train_nn',
             dataType: 'json',
-            async: false,
+            async: true,
             data:{
                 epochs: epochs,
-                batch_size: batch_size
+                batch_size: batch_size,
+                lr: lr
             },
             success: function(){
                 $.notify(
@@ -91,54 +111,58 @@ function addTrainButtonFunctionality(){
                         className: 'success'
                     }
                 )
+                $('#train-btn').removeAttr('disabled')
+                $('#train-btn').html('Train')
+                drawPlot()
+                drawTable()
+            },
+            error: function(){
+                $('#train-btn').removeAttr('disabled')
+                $('#train-btn').html('Train')
             }
         })
-        getDecisionSurface()
-        getLossPlot()
-        getValLossPlot()
     })
 }
 
-function getLossPlot(){
+function retrieveTrainData(){
+    let result;
     $.ajax({
         method: 'GET',
         async: false,
-        url: '/train/get_loss',
+        url: '/train/train_data',
         success: function(response){
-            $('#train-loss-plot').html(response)
+            result = response
+            $('#sel_task').val(response.task).change()
+            $('#sel_net').val(response.net).change()
         }
     })
+    return result
 }
 
-function getValLossPlot(){
+function updateTrainData(task, net){
     $.ajax({
-        method: 'GET',
+        method: 'POST',
+        url: '/train/train_data',
+        dataType: 'json',
         async: false,
-        url: '/train/get_val_loss',
-        success: function(response){
-            $('#test-loss-plot').html(response)
+        data:{
+            task: task,
+            net: net
+        },
+        success: function(){
+            $.notify(
+                'Updated train data',
+                {
+                    position: "bottom right",
+                    className: 'success'
+                }
+            )
         }
     })
 }
-
-function getDecisionSurface(){
-    console.log('log')
-    $.ajax({
-        method: 'GET',
-        async: false,
-        url: '/train/get_decision_surface',
-        success: function(response){
-            $('#configure-dataset-plot-train-div').html(response)
-        }
-    })
-}
-
 
 $(document).ready(function(){
-    let network_architecture = retrieve_network_architecture()
+    let train_data = retrieveTrainData()
     addResetBehaviour()
-    addConfirmBehaviour(network_architecture.nr_hidden_layers, false)
-    loadHyperparameters(network_architecture)
-    loadLossFunction(network_architecture)
     addTrainButtonFunctionality()
 })

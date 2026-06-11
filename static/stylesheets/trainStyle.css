@@ -1,14 +1,16 @@
 .train-div{
     width: 100%;
     padding: 30px 60px;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    align-items: center;
 }
 
 .configure-train-panel{
-    width: auto;
+    width: 80%;
     display: flex;
-    justify-content: space-around;
-    padding: 10px 20px;
-
+    justify-content: space-between;
 }
 
 .configure-train-btn{
@@ -33,6 +35,7 @@
     justify-content: center;
     text-align: center;
     padding: 20px;
+    width: 40%;
 }
 
 .apply-btn{
@@ -43,6 +46,7 @@
 .train-nn-dataset{
     width: 100%;
     display: flex;
+    flex-direction: column;
     gap: 20px;
     padding-bottom: 100px;
     align-items: center;
@@ -54,9 +58,14 @@
     height: 500px;
 }
 
-#nn-graph-div{
-    width:100%;
-    height: 100%;
+.nn-graph-div{
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+
 }
 
 #configure-dataset-plot-train-div{
@@ -75,15 +84,28 @@
 }
 
 .history-plots{
-    width: 100%;
+    margin-top: 20px;
+    width: 80%;
     display: flex;
     gap: 20px;
 }
 
-#train-loss-plot, #test-loss-plot{
+.plot{
     width: 50%;
     border: 1px solid lightgray;
     border-radius: 5px;
 }
 
+.white-bg{
+    background-color: white;
+}
 
+.scale-085{
+    /*transform: scale(0.65);*/
+}
+
+.plot-container{
+    height: 30%;
+    flex-direction: row;
+    justify-content: center;
+}
